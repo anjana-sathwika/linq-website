@@ -75,7 +75,7 @@ type Ctx = {
 
 const StoreCtx = createContext<Ctx | null>(null);
 
-const KEY = "together-store-v1";
+const KEY = "linq-store-v1";
 
 type Persisted = {
   profile: Profile | null;

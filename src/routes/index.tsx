@@ -30,10 +30,10 @@ import { useStore, type RideType, type RideQuery, type VehicleType, generateMatc
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "together. — Share the way" },
-      { name: "description", content: "Verified ride-sharing for instant trips, daily commutes, and planned long-distance journeys." },
-      { property: "og:title", content: "together. — Share the way" },
-      { property: "og:description", content: "Verified ride-sharing carpools." },
+      { title: "linQ — Go Together Rides" },
+      { name: "description", content: "Go Together Rides - Verified ride-sharing for instant trips, daily commutes, and planned long-distance journeys." },
+      { property: "og:title", content: "linQ — Go Together Rides" },
+      { property: "og:description", content: "Go Together Rides - Verified ride-sharing carpools." },
     ],
   }),
   component: Home,
@@ -116,7 +116,7 @@ function MobileHome() {
           <div className="size-11 rounded-full bg-gradient-to-br from-primary/70 to-primary/30 ring-2 ring-primary/40" />
           <div>
             <p className="text-xs text-muted-foreground">Welcome to</p>
-            <p className="text-base font-semibold">together<span className="text-primary">.</span></p>
+            <p className="text-base font-semibold">linQ</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -127,7 +127,7 @@ function MobileHome() {
 
       <p className="mt-7 text-xs font-semibold tracking-[0.2em] text-primary">WHERE TO TODAY?</p>
       <h1 className="mt-2 text-5xl font-bold leading-[1.05] tracking-tight">
-        Travel smarter,<br />together.
+        Go Together<br />Rides
       </h1>
       <div className="mt-5 flex flex-wrap gap-2">
         <Pill><Users className="size-3.5" />12,400+ riders</Pill>
@@ -202,8 +202,8 @@ function DesktopHome() {
             </span>
             <p className="mt-6 text-sm font-semibold tracking-[0.25em] text-primary">WHERE TO TODAY?</p>
             <h1 className="mt-3 text-7xl font-bold leading-[1.02] tracking-tight">
-              Travel smarter,<br />
-              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">together.</span>
+              Go Together<br />
+              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">Rides</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Match with verified riders heading the same way at the same time. Instant pickups,
@@ -254,7 +254,7 @@ function DesktopHome() {
           {[
             { Icon: MapPin, title: "Set your route", desc: "Pickup, drop, ride type — done." },
             { Icon: Users, title: "Match instantly", desc: "Verified riders going the same way." },
-            { Icon: ShieldCheck, title: "Ride together", desc: "Split costs, save the planet, stay safe." },
+            { Icon: ShieldCheck, title: "Go Together", desc: "Split costs, save planet, stay safe." },
           ].map((s, i) => (
             <div key={s.title} className="rounded-3xl border border-border bg-card p-7">
               <div className="flex items-center gap-3">
@@ -273,7 +273,7 @@ function DesktopHome() {
 
       <footer className="border-t border-border/50">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-8 py-8 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} together. — Share the way.</p>
+          <p>© {new Date().getFullYear()} linQ — Go Together Rides.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-foreground">Privacy</a>
             <a href="#" className="hover:text-foreground">Terms</a>

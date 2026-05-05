@@ -4,7 +4,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { Search as SearchIcon, MapPin, Building2, GraduationCap, Share2, MessageCircle, Smartphone } from "lucide-react";
 
 export const Route = createFileRoute("/search")({
-  head: () => ({ meta: [{ title: "Search — together." }] }),
+  head: () => ({ meta: [{ title: "Search — linQ" }] }),
   component: SearchPage,
 });
 
@@ -20,7 +20,7 @@ const orgs = [
 function SearchPage() {
   const [q, setQ] = useState("");
   const filtered = orgs.filter((o) => o.name.toLowerCase().includes(q.toLowerCase()));
-  const referralMsg = encodeURIComponent("Hey! Try together. — find verified ride partners going your way. https://together.app");
+  const referralMsg = encodeURIComponent("Hey! Try linQ — Go Together Rides. Find verified ride partners going your way. https://linq.app");
 
   return (
     <main className="min-h-screen bg-background text-foreground">

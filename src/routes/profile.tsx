@@ -4,7 +4,7 @@ import { useTheme, type Theme } from "@/lib/theme";
 import { BadgeCheck, ChevronRight, Moon, Sun, Settings, CreditCard, Shield, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
-  head: () => ({ meta: [{ title: "Profile — together." }] }),
+  head: () => ({ meta: [{ title: "Profile — linQ" }] }),
   component: Profile,
 });
 

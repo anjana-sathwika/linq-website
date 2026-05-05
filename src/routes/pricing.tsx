@@ -6,8 +6,8 @@ import { Check, Sparkles } from "lucide-react";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — together." },
-      { name: "description", content: "Free, weekly and monthly plans for together. ride matching." },
+      { title: "Pricing — linQ" },
+      { name: "description", content: "Free, weekly and monthly plans for linQ ride matching." },
     ],
   }),
   component: Pricing,

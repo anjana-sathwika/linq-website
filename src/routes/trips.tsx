@@ -5,7 +5,7 @@ import { useStore, generateMatches } from "@/lib/store";
 import { Calendar, MapPin, Plus, Trash2, Lock, BadgeCheck, Star } from "lucide-react";
 
 export const Route = createFileRoute("/trips")({
-  head: () => ({ meta: [{ title: "Trips — together." }] }),
+  head: () => ({ meta: [{ title: "Trips — linQ" }] }),
   component: Trips,
 });
 

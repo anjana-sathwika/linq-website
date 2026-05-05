@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/matches")({
-  head: () => ({ meta: [{ title: "Your matches — together." }] }),
+  head: () => ({ meta: [{ title: "Your matches — linQ" }] }),
   component: Matches,
 });
 

@@ -4,7 +4,7 @@ import { useStore } from "@/lib/store";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Sign in — together." }] }),
+  head: () => ({ meta: [{ title: "Sign in — linQ" }] }),
   component: Login,
 });
 
@@ -24,7 +24,7 @@ function Login() {
           <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Sparkles className="size-5" />
           </span>
-          <span className="text-xl font-bold">together<span className="text-primary">.</span></span>
+          <span className="text-xl font-bold">linQ</span>
         </div>
         <h1 className="mt-6 text-3xl font-bold">Welcome</h1>
         <p className="mt-2 text-sm text-muted-foreground">

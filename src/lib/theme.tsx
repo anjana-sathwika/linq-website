@@ -7,7 +7,7 @@ const ALL: Theme[] = ["sapphire", "sapphire-dark"];
 type Ctx = { theme: Theme; setTheme: (t: Theme) => void; toggle: () => void };
 const ThemeCtx = createContext<Ctx>({ theme: "sapphire", setTheme: () => {}, toggle: () => {} });
 
-const STORAGE_KEY = "together-theme";
+const STORAGE_KEY = "linq-theme";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("sapphire");

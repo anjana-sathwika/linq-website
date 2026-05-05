@@ -4,7 +4,7 @@ import { useStore, type ConnectMethod, type Profile } from "@/lib/store";
 import { CheckCircle2, Instagram, MessageCircle, Send } from "lucide-react";
 
 export const Route = createFileRoute("/onboarding")({
-  head: () => ({ meta: [{ title: "Create profile — together." }] }),
+  head: () => ({ meta: [{ title: "Create profile — linQ" }] }),
   component: Onboarding,
 });
 

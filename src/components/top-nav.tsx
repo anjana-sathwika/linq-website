@@ -23,7 +23,7 @@ export function TopNav() {
             <Sparkles className="size-5" />
           </span>
           <span className="text-lg font-bold tracking-tight">
-            together<span className="text-primary">.</span>
+            linQ
           </span>
         </Link>
 
