@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, CreditCard, Search, ClipboardList, User } from "lucide-react";
+import { Home, CreditCard, Search, ClipboardList, User, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/lib/theme";
 
 const items = [
   { to: "/", label: "Home", Icon: Home },
@@ -11,6 +12,7 @@ const items = [
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { theme, toggle } = useTheme();
 
   return (
     <nav className="fixed inset-x-0 bottom-4 z-50 mx-auto flex max-w-md justify-center px-5 lg:hidden">
@@ -32,6 +34,17 @@ export function BottomNav() {
             </Link>
           );
         })}
+        <button
+          onClick={toggle}
+          aria-label="Toggle theme"
+          className="flex size-11 items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition"
+        >
+          {theme === "sapphire" ? (
+            <Moon className="size-5" strokeWidth={2} />
+          ) : (
+            <Sun className="size-5" strokeWidth={2} />
+          )}
+        </button>
       </div>
     </nav>
   );

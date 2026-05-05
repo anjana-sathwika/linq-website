@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Sparkles, Home, Search, ClipboardList, CreditCard, User } from "lucide-react";
+import { Sparkles, Home, Search, ClipboardList, CreditCard, User, Sun, Moon } from "lucide-react";
 import { useStore } from "@/lib/store";
+import { useTheme } from "@/lib/theme";
 
 const links = [
   { to: "/", label: "Home", Icon: Home },
@@ -12,6 +13,7 @@ const links = [
 export function TopNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { signedIn, profile } = useStore();
+  const { theme, toggle } = useTheme();
 
   return (
     <header className="sticky top-0 z-50 hidden w-full border-b border-border/60 bg-background/80 backdrop-blur-xl lg:block">
@@ -46,6 +48,17 @@ export function TopNav() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <button
+            onClick={toggle}
+            className="rounded-full border border-border bg-card/60 p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === "sapphire" ? (
+              <Moon className="size-4" />
+            ) : (
+              <Sun className="size-4" />
+            )}
+          </button>
           {signedIn ? (
             <Link
               to="/profile"
