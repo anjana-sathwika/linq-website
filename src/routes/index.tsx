@@ -25,8 +25,9 @@ import {
 } from "lucide-react";
 import { BottomNav } from "@/components/bottom-nav";
 import { Switch } from "@/components/ui/switch";
+import { LocationInput } from "@/components/location-input";
 import { useTheme } from "@/lib/theme";
-import { useStore, type RideType, type RideQuery, type VehicleType, generateMatches } from "@/lib/store";
+import { useStore, type RideType, type RideQuery, type VehicleType, type Location, generateMatches } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,8 +65,8 @@ function useRideForm() {
   const navigate = useNavigate();
 
   const [selected, setSelected] = useState<RideType>("instant");
-  const [pickup, setPickup] = useState("");
-  const [drop, setDrop] = useState("");
+  const [pickup, setPickup] = useState<Location | null>(null);
+  const [drop, setDrop] = useState<Location | null>(null);
   const [hasVehicle, setHasVehicle] = useState(false);
   const [vehicleType, setVehicleType] = useState<VehicleType>("car");
   const [seats, setSeats] = useState(1);
@@ -83,7 +84,8 @@ function useRideForm() {
   }, [drop, pickup]);
 
   // Memoize buildQuery function
-  const buildQuery = useCallback((): RideQuery => {
+  const buildQuery = useCallback((): RideQuery | null => {
+    if (!pickup || !drop) return null;
     return { rideType: selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time };
   }, [selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time]);
 
@@ -95,13 +97,14 @@ function useRideForm() {
 
   // Memoize confirmPost function - remove circular dependency
   const confirmPost = useCallback((post: boolean) => {
-    const q = { rideType: selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time };
+    const q = buildQuery();
+    if (!q) return;
     setLastQuery(q);
     if (post && signedIn) postRide(q);
     setConfirmOpen(false);
     if (!signedIn) navigate({ to: "/login" });
     else navigate({ to: "/matches" });
-  }, [selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time, signedIn, setLastQuery, postRide, navigate]);
+  }, [buildQuery, signedIn, setLastQuery, postRide, navigate]);
 
   // Memoize state object to prevent recreation
   const state = useMemo(() => ({ 
@@ -185,7 +188,7 @@ function MobileHome() {
                   <p className="font-semibold truncate">{m.name}</p>
                   <BadgeCheck className="size-3 text-primary" />
                 </div>
-                <p className="text-sm text-muted-foreground">{m.pickup} → {m.drop}</p>
+                <p className="text-sm text-muted-foreground">{m.pickup.name} → {m.drop.name}</p>
                 <p className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                   <Star className="size-3 fill-primary text-primary" /> {m.rating.toFixed(1)} · {m.overlapPct}% match
                 </p>
@@ -331,13 +334,21 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
         </div>
         <div className="flex-1 space-y-2">
           <div>
-            <p className="text-[10px] font-medium tracking-wider text-muted-foreground">PICKUP</p>
-            <input value={state.pickup} onChange={(e) => set.setPickup(e.target.value || "")} placeholder="Enter pickup location" className="w-full bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/70 placeholder:font-medium" />
+            <LocationInput
+              value={state.pickup}
+              onChange={set.setPickup}
+              placeholder="Enter pickup location"
+              className="bg-transparent"
+            />
           </div>
           <div className="h-px bg-border" />
           <div>
-            <p className="text-[10px] font-medium tracking-wider text-muted-foreground">DROP</p>
-            <input value={state.drop} onChange={(e) => set.setDrop(e.target.value || "")} placeholder="Where are you going?" className="w-full bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/70 placeholder:font-medium" />
+            <LocationInput
+              value={state.drop}
+              onChange={set.setDrop}
+              placeholder="Where are you going?"
+              className="bg-transparent"
+            />
           </div>
         </div>
         <button onClick={swap} className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary">

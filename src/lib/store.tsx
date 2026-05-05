@@ -5,6 +5,13 @@ export type ConnectMethod = "instagram" | "whatsapp" | "telegram";
 export type RideType = "instant" | "daily" | "long";
 export type VehicleType = "car" | "bike" | "auto";
 
+export interface Location {
+  name: string;
+  lat: number;
+  lng: number;
+  display_name?: string;
+}
+
 export type Profile = {
   name: string;
   email: string;
@@ -17,8 +24,8 @@ export type Profile = {
 
 export type RideQuery = {
   rideType: RideType;
-  pickup: string;
-  drop: string;
+  pickup: Location;
+  drop: Location;
   hasVehicle: boolean;
   vehicleType?: VehicleType;
   seats: number;
@@ -42,8 +49,8 @@ export type MatchProfile = {
   name: string;
   avatar: string;
   overlapPct: number;
-  pickup: string;
-  drop: string;
+  pickup: Location;
+  drop: Location;
   timing: string;
   bio: string;
   connect: ConnectMethod;
@@ -214,9 +221,13 @@ export function generateMatches(q: RideQuery | null): MatchProfile[] {
     { id: "m5", name: "Karan V.", avatar: "from-cyan-500/60 to-blue-500/20", overlapPct: 69, timing: "Returns same way", bio: "Founder, early bird.", connect: "instagram", connectId: "@karanv", rating: 4.6 },
     { id: "m6", name: "Diya N.", avatar: "from-rose-500/60 to-pink-500/20", overlapPct: 65, timing: "Flexible weekends", bio: "Teacher, friendly conversations.", connect: "telegram", connectId: "@diyan", rating: 4.8 },
   ];
+  
+  const defaultPickup: Location = { name: "Bandra West", lat: 19.0596, lng: 72.8295 };
+  const defaultDrop: Location = { name: "BKC", lat: 19.0759, lng: 72.8774 };
+  
   return base.map((b) => ({
     ...b,
-    pickup: q?.pickup || "Bandra West",
-    drop: q?.drop || "BKC",
+    pickup: q?.pickup || defaultPickup,
+    drop: q?.drop || defaultDrop,
   }));
 }
