@@ -36,47 +36,139 @@ function Safety() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-md px-5 pt-8 pb-32">
+      <div className="mx-auto max-w-7xl px-8 py-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold">Safety & Verifications</h1>
           <button 
             onClick={() => navigate({ to: "/profile" })}
-            className="rounded-full bg-secondary p-2"
+            className="rounded-full bg-secondary p-2 hover:bg-muted transition-colors"
           >
             <ArrowLeft className="size-5" />
           </button>
-          <h1 className="text-2xl font-bold">Safety & Verifications</h1>
+        </div>
+
+        {/* Safety Stats */}
+        <div className="grid grid-cols-4 gap-6 mb-8">
+          <div className="bg-card rounded-2xl border border-border p-6 text-center">
+            <div className="size-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
+              <MapPin className="size-6 text-green-600" />
+            </div>
+            <h3 className="font-semibold">Location Status</h3>
+            <p className="text-2xl font-bold text-green-600">Active</p>
+          </div>
+          
+          <div className="bg-card rounded-2xl border border-border p-6 text-center">
+            <div className="size-12 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4">
+              <Shield className="size-6 text-blue-600" />
+            </div>
+            <h3 className="font-semibold">Verification Level</h3>
+            <p className="text-2xl font-bold text-blue-600">Verified</p>
+          </div>
+          
+          <div className="bg-card rounded-2xl border border-border p-6 text-center">
+            <div className="size-12 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="size-6 text-purple-600" />
+            </div>
+            <h3 className="font-semibold">Emergency Contacts</h3>
+            <p className="text-2xl font-bold text-purple-600">3 Active</p>
+          </div>
+          
+          <div className="bg-card rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
+            <div className="size-12 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
+              <Shield className="size-6 text-red-600" />
+            </div>
+            <h3 className="font-semibold">Safety Status</h3>
+            <p className="text-2xl font-bold text-red-600">Protected</p>
+          </div>
         </div>
 
         {/* Emergency Actions */}
-        <div className="mb-6 space-y-3">
-          <h2 className="font-semibold text-red-500">Emergency Actions</h2>
-          
-          <button
-            onClick={handleShareLocation}
-            className="w-full flex items-center gap-3 rounded-2xl border-2 border-red-200 bg-red-50 p-4 text-left transition hover:bg-red-100"
-          >
-            <div className="flex size-10 items-center justify-center rounded-full bg-red-500 text-white">
-              <MapPin className="size-5" />
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-red-700">Share Live Location</p>
-              <p className="text-sm text-red-600">Share your real-time location with us</p>
-            </div>
-          </button>
-
-          <button
-            onClick={() => handleAlertOption("Immediate help needed")}
-            className="w-full flex items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 p-4 text-left transition hover:bg-orange-100"
-          >
-            <div className="flex size-10 items-center justify-center rounded-full bg-orange-500 text-white">
+        <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="bg-card rounded-2xl border border-border p-6">
+            <h3 className="text-lg font-semibold mb-4 text-red-600 flex items-center gap-2">
               <AlertTriangle className="size-5" />
+              Emergency Actions
+            </h3>
+            <div className="space-y-3">
+              <button
+                onClick={handleShareLocation}
+                className="w-full flex items-center gap-3 rounded-xl border-2 border-red-200 bg-red-50 p-4 text-left transition hover:bg-red-100"
+              >
+                <div className="flex size-10 items-center justify-center rounded-full bg-red-500 text-white">
+                  <MapPin className="size-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-red-700">Share Live Location</p>
+                  <p className="text-sm text-red-600">Share your real-time location with us</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => handleAlertOption("Immediate help needed")}
+                className="w-full flex items-center gap-3 rounded-xl border-2 border-red-200 bg-red-50 p-4 text-left transition hover:bg-red-100"
+              >
+                <div className="flex size-10 items-center justify-center rounded-full bg-red-500 text-white">
+                  <AlertTriangle className="size-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-red-700">Immediate Help</p>
+                  <p className="text-sm text-red-600">Get instant assistance</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => handleAlertOption("Suspicious activity")}
+                className="w-full flex items-center gap-3 rounded-xl border-2 border-red-200 bg-red-50 p-4 text-left transition hover:bg-red-100"
+              >
+                <div className="flex size-10 items-center justify-center rounded-full bg-red-500 text-white">
+                  <Shield className="size-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-red-700">Report Suspicious Activity</p>
+                  <p className="text-sm text-red-600">Report unsafe situations</p>
+                </div>
+              </button>
             </div>
-            <div className="flex-1">
-              <p className="font-semibold text-orange-700">Send Alert</p>
-              <p className="text-sm text-orange-600">Get immediate assistance</p>
+          </div>
+
+          {/* Verification Status */}
+          <div className="bg-card rounded-2xl border border-border p-6">
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <Shield className="size-5 text-primary" />
+              Verification Status
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">ID Verification</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full" />
+                  <span className="font-medium">Verified</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Phone Verification</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full" />
+                  <span className="font-medium">Verified</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Email Verification</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full" />
+                  <span className="font-medium">Verified</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Background Check</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full" />
+                  <span className="font-medium">Pending</span>
+                </div>
+              </div>
             </div>
-          </button>
+          </div>
         </div>
 
         {/* Safety Rules */}
