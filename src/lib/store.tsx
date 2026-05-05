@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useMemo, useState, useCallback, type ReactNode } from "react";
-import { supabase } from "./supabase";
 
 export type Plan = "free" | "weekly" | "monthly";
 export type ConnectMethod = "instagram" | "whatsapp" | "telegram";
@@ -96,7 +95,6 @@ function loadLocal() {
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [sessionUser, setSessionUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<RidePost[]>([]);
   const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
@@ -104,33 +102,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [planExpiry, setPlanExpiry] = useState<number | null>(null);
   const [pendingProfile, setPendingProfile] = useState<{ email: string; name: string } | null>(null);
   const [lastQuery, setLastQuery] = useState<RideQuery | null>(null);
-  const [isInitializing, setIsInitializing] = useState(true);
 
-  // Initial load of Supabase session and Local unlocks/subscriptions
+  // Initial load of Local unlocks/subscriptions
   useEffect(() => {
     const local = loadLocal();
+    setProfile(local.profile || null);
+    setPosts(local.posts || []);
     setUnlockedIds(local.unlockedIds || []);
     setPlan(local.plan || "free");
     setPlanExpiry(local.planExpiry || null);
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSessionUser(session?.user ?? null);
-      if (session?.user) checkProfile(session.user);
-      else setIsInitializing(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSessionUser(session?.user ?? null);
-      if (session?.user) checkProfile(session.user);
-      else {
-        setProfile(null);
-        setPendingProfile(null);
-        setPosts([]);
-        setIsInitializing(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    setPendingProfile(null);
+    setIsInitializing(false);
   }, []);
 
   // Save local subscription state continuously
@@ -141,46 +123,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(timeoutId);
   }, [unlockedIds, plan, planExpiry]);
 
-  const checkProfile = async (user: any) => {
-    const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-    if (data && !error) {
-      setProfile(data);
-      setPendingProfile(null);
-      // Fetch user's posts
-      const { data: userPosts } = await supabase.from("rides").select("*").eq("owner_id", user.id);
-      if (userPosts) setPosts(userPosts);
-    } else {
-      setPendingProfile({ email: user.email, name: user.user_metadata?.full_name || "" });
-    }
-    setIsInitializing(false);
-  };
-
+  
   const value = useMemo<Ctx>(() => {
     const signInWithGoogle = () => {
-      supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin,
-        },
+      // Mock Google sign-in - create a pending profile
+      setPendingProfile({ 
+        email: "anjana@example.com", 
+        name: "Anjana" 
       });
     };
 
     const completeProfile = async (p: Profile) => {
-      if (!sessionUser) return;
-      const { error } = await supabase.from("profiles").upsert({
-        id: sessionUser.id,
-        ...p,
-      });
-      if (!error) {
-        setProfile({ id: sessionUser.id, ...p });
-        setPendingProfile(null);
-      } else {
-        console.error("Failed to create profile", error);
-      }
+      // Mock profile completion - just set the profile locally
+      setProfile({ id: "mock-user-1", ...p });
+      setPendingProfile(null);
     };
 
     const signOut = async () => {
-      await supabase.auth.signOut();
+      // Mock sign out - just clear local state
       setProfile(null);
       setPendingProfile(null);
       setUnlockedIds([]);
@@ -189,24 +149,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     };
 
     const postRide = async (q: RideQuery) => {
-      if (!profile || !sessionUser) return;
-      const postData = {
-        owner_id: sessionUser.id,
+      if (!profile) return null as any;
+      // Mock ride posting - just return the data
+      const postData: RidePost = {
+        ...q,
+        id: "mock-ride-" + Math.random().toString(36).slice(2, 9),
         ownerName: profile.name,
         createdAt: Date.now(),
-        ...q,
-        // Supabase JSONB helps store the nested Location object easily without complex Postgres types initially
-        pickup: q.pickup,
-        drop: q.drop,
       };
-
-      const { data, error } = await supabase.from("rides").insert([postData]).select().single();
-      if (!error && data) {
-        setPosts((prev) => [data, ...prev]);
-        return data;
-      } else {
-        console.error("Failed to post ride", error);
-      }
+      setPosts((prev) => [postData, ...prev]);
+      return postData;
     };
 
     const unlock = (id: string) => setUnlockedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
@@ -233,7 +185,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       unlockedIds,
       plan,
       planExpiry,
-      pendingProfile: isInitializing ? null : pendingProfile,
+      pendingProfile,
       lastQuery,
       signInWithGoogle,
       completeProfile,
@@ -244,7 +196,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       canUnlock,
       upgrade,
     };
-  }, [profile, posts, unlockedIds, plan, planExpiry, pendingProfile, lastQuery, sessionUser, isInitializing]);
+  }, [profile, posts, unlockedIds, plan, planExpiry, pendingProfile, lastQuery]);
 
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
 }
