@@ -16,6 +16,8 @@ import {
   Sun,
   Moon,
   Car,
+  Bike,
+  Truck,
   CalendarDays,
   RefreshCw,
   Check,
@@ -23,7 +25,7 @@ import {
 } from "lucide-react";
 import { BottomNav } from "@/components/bottom-nav";
 import { useTheme } from "@/lib/theme";
-import { useStore, type RideType, type RideQuery, generateMatches } from "@/lib/store";
+import { useStore, type RideType, type RideQuery, type VehicleType, generateMatches } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,6 +66,7 @@ function useRideForm() {
   const [pickup, setPickup] = useState("");
   const [drop, setDrop] = useState("");
   const [hasVehicle, setHasVehicle] = useState(false);
+  const [vehicleType, setVehicleType] = useState<VehicleType>("car");
   const [seats, setSeats] = useState(1);
   const [days, setDays] = useState<string[]>([]);
   const [returnJourney, setReturnJourney] = useState(false);
@@ -75,7 +78,7 @@ function useRideForm() {
   const swap = () => { setPickup(drop); setDrop(pickup); };
 
   function buildQuery(): RideQuery {
-    return { rideType: selected, pickup, drop, hasVehicle, seats, days, returnJourney, returnTime, date, time };
+    return { rideType: selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time };
   }
 
   function findMatch() {
@@ -93,8 +96,8 @@ function useRideForm() {
   }
 
   return {
-    state: { selected, pickup, drop, hasVehicle, seats, days, returnJourney, returnTime, date, time, confirmOpen },
-    set: { setSelected, setPickup, setDrop, setHasVehicle, setSeats, setDays, setReturnJourney, setReturnTime, setDate, setTime, setConfirmOpen },
+    state: { selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time, confirmOpen },
+    set: { setSelected, setPickup, setDrop, setHasVehicle, setVehicleType, setSeats, setDays, setReturnJourney, setReturnTime, setDate, setTime, setConfirmOpen },
     swap, findMatch, confirmPost,
   };
 }
@@ -331,10 +334,35 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
           <Switch on={state.hasVehicle} onChange={set.setHasVehicle} />
         </div>
         {state.hasVehicle && (
-          <div className="mt-3 flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">Seats available</span>
-            <NumberStep value={state.seats} setValue={set.setSeats} min={1} max={6} />
-          </div>
+          <>
+            <div className="mt-3">
+              <span className="text-xs text-muted-foreground">Vehicle type</span>
+              <div className="mt-2 flex gap-2">
+                {[
+                  { type: "car" as VehicleType, label: "Car", Icon: Car },
+                  { type: "bike" as VehicleType, label: "Bike", Icon: Bike },
+                  { type: "auto" as VehicleType, label: "Auto", Icon: Truck },
+                ].map(({ type, label, Icon }) => (
+                  <button
+                    key={type}
+                    onClick={() => set.setVehicleType(type)}
+                    className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                      state.vehicleType === type
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="size-3" />
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">Seats available</span>
+              <NumberStep value={state.seats} setValue={set.setSeats} min={1} max={6} />
+            </div>
+          </>
         )}
       </div>
 

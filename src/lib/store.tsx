@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 export type Plan = "free" | "weekly" | "monthly";
 export type ConnectMethod = "instagram" | "whatsapp" | "telegram";
 export type RideType = "instant" | "daily" | "long";
+export type VehicleType = "car" | "bike" | "auto";
 
 export type Profile = {
   name: string;
@@ -19,6 +20,7 @@ export type RideQuery = {
   pickup: string;
   drop: string;
   hasVehicle: boolean;
+  vehicleType?: VehicleType;
   seats: number;
   // daily
   days?: string[]; // e.g. ['Mon','Tue']

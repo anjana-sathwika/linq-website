@@ -51,7 +51,12 @@ function Trips() {
                   <span className="font-medium">{p.pickup} → {p.drop}</span>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                  {p.hasVehicle && <Tag>{p.seats} seats available</Tag>}
+                  {p.hasVehicle && (
+                    <>
+                      <Tag>{p.seats} seats</Tag>
+                      {p.vehicleType && <Tag>{p.vehicleType}</Tag>}
+                    </>
+                  )}
                   {p.days && p.days.length > 0 && <Tag>{p.days.join(", ")}</Tag>}
                   {p.returnJourney && <Tag>Return @ {p.returnTime || "tbd"}</Tag>}
                   {p.date && <Tag><Calendar className="size-3" /> {p.date} {p.time}</Tag>}
