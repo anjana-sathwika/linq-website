@@ -117,6 +117,7 @@ export function LocationInput({
         'accept-language': 'en'
       });
 
+      console.log('Searching for:', query);
       const response = await fetch(`${NOMINATIM_API}?${params}`, {
         signal: controller.signal,
         headers: {
@@ -124,11 +125,14 @@ export function LocationInput({
         }
       });
 
+      console.log('Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Search failed');
+        throw new Error(`Search failed: ${response.status} ${response.statusText}`);
       }
 
       const results: NominatimResult[] = await response.json();
+      console.log('Search results:', results);
 
       // Cache the results
       searchCache.set(cacheKey, results);
@@ -156,6 +160,7 @@ export function LocationInput({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    console.log('Input changed:', value);
     setInputValue(value);
     setSelectedIndex(-1);
 
