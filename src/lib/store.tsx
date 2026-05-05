@@ -115,13 +115,63 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setPlanExpiry(d.planExpiry);
   }, []);
 
+  // Debounced localStorage write to prevent blocking on every keystroke
   useEffect(() => {
-    const data: Persisted = { profile, posts, unlockedIds, plan, planExpiry };
-    localStorage.setItem(KEY, JSON.stringify(data));
+    const timeoutId = setTimeout(() => {
+      const data: Persisted = { profile, posts, unlockedIds, plan, planExpiry };
+      localStorage.setItem(KEY, JSON.stringify(data));
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timeoutId);
   }, [profile, posts, unlockedIds, plan, planExpiry]);
 
-  const value = useMemo<Ctx>(
-    () => ({
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo<Ctx>(() => {
+    const signInWithGoogle = () => {
+      // mock: simulate google returning name+email
+      setPendingProfile({ email: "you@gmail.com", name: "Aanya M." });
+    };
+
+    const completeProfile = (p: Profile) => {
+      setProfile(p);
+      setPendingProfile(null);
+    };
+
+    const signOut = () => {
+      setProfile(null);
+      setUnlockedIds([]);
+      setPlan("free");
+      setPlanExpiry(null);
+    };
+
+    const postRide = (q: RideQuery) => {
+      const post: RidePost = {
+        ...q,
+        id: "post-" + Math.random().toString(36).slice(2, 9),
+        ownerName: profile?.name ?? "You",
+        createdAt: Date.now(),
+      };
+      setPosts((prev) => [post, ...prev]);
+      return post;
+    };
+
+    const unlock = (id: string) => setUnlockedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+
+    const canUnlock = () => {
+      if (plan === "monthly" && planExpiry && planExpiry > Date.now()) return true;
+      if (plan === "weekly" && planExpiry && planExpiry > Date.now()) return unlockedIds.length < 10;
+      return unlockedIds.length < 2;
+    };
+
+    const upgrade = (p: Plan) => {
+      setPlan(p);
+      const now = Date.now();
+      if (p === "weekly") setPlanExpiry(now + 7 * 24 * 3600 * 1000);
+      else if (p === "monthly") setPlanExpiry(now + 30 * 24 * 3600 * 1000);
+      else setPlanExpiry(null);
+    };
+
+    return {
       signedIn: !!profile,
       profile,
       posts,
@@ -130,47 +180,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       planExpiry,
       pendingProfile,
       lastQuery,
-      signInWithGoogle: () => {
-        // mock: simulate google returning name+email
-        setPendingProfile({ email: "you@gmail.com", name: "Aanya M." });
-      },
-      completeProfile: (p) => {
-        setProfile(p);
-        setPendingProfile(null);
-      },
-      signOut: () => {
-        setProfile(null);
-        setUnlockedIds([]);
-        setPlan("free");
-        setPlanExpiry(null);
-      },
+      signInWithGoogle,
+      completeProfile,
+      signOut,
       setLastQuery,
-      postRide: (q) => {
-        const post: RidePost = {
-          ...q,
-          id: "post-" + Math.random().toString(36).slice(2, 9),
-          ownerName: profile?.name ?? "You",
-          createdAt: Date.now(),
-        };
-        setPosts((prev) => [post, ...prev]);
-        return post;
-      },
-      unlock: (id) => setUnlockedIds((prev) => (prev.includes(id) ? prev : [...prev, id])),
-      canUnlock: () => {
-        if (plan === "monthly" && planExpiry && planExpiry > Date.now()) return true;
-        if (plan === "weekly" && planExpiry && planExpiry > Date.now()) return unlockedIds.length < 10;
-        return unlockedIds.length < 2;
-      },
-      upgrade: (p) => {
-        setPlan(p);
-        const now = Date.now();
-        if (p === "weekly") setPlanExpiry(now + 7 * 24 * 3600 * 1000);
-        else if (p === "monthly") setPlanExpiry(now + 30 * 24 * 3600 * 1000);
-        else setPlanExpiry(null);
-      },
-    }),
-    [profile, posts, unlockedIds, plan, planExpiry, pendingProfile, lastQuery],
-  );
+      postRide,
+      unlock,
+      canUnlock,
+      upgrade,
+    };
+  }, [profile, posts, unlockedIds, plan, planExpiry, pendingProfile, lastQuery]);
 
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
 }

@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import {
   Bell,
   Users,
@@ -76,31 +76,50 @@ function useRideForm() {
   const [time, setTime] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const swap = () => { setPickup(drop); setDrop(pickup); };
+  // Memoize swap function to prevent recreation
+  const swap = useCallback(() => { 
+    setPickup(drop); 
+    setDrop(pickup); 
+  }, [drop, pickup]);
 
-  function buildQuery(): RideQuery {
+  // Memoize buildQuery function
+  const buildQuery = useCallback((): RideQuery => {
     return { rideType: selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time };
-  }
+  }, [selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time]);
 
-  function findMatch() {
+  // Memoize findMatch function
+  const findMatch = useCallback(() => {
     if (!pickup || !drop) return;
     setConfirmOpen(true);
-  }
+  }, [pickup, drop]);
 
-  function confirmPost(post: boolean) {
+  // Memoize confirmPost function
+  const confirmPost = useCallback((post: boolean) => {
     const q = buildQuery();
     setLastQuery(q);
     if (post && signedIn) postRide(q);
     setConfirmOpen(false);
     if (!signedIn) navigate({ to: "/login" });
     else navigate({ to: "/matches" });
-  }
+  }, [buildQuery, signedIn, setLastQuery, postRide, navigate]);
 
-  return {
-    state: { selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time, confirmOpen },
-    set: { setSelected, setPickup, setDrop, setHasVehicle, setVehicleType, setSeats, setDays, setReturnJourney, setReturnTime, setDate, setTime, setConfirmOpen },
-    swap, findMatch, confirmPost,
-  };
+  // Memoize state object to prevent recreation
+  const state = useMemo(() => ({ 
+    selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time, confirmOpen 
+  }), [selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time, confirmOpen]);
+
+  // Memoize setters object to prevent recreation
+  const set = useMemo(() => ({ 
+    setSelected, setPickup, setDrop, setHasVehicle, setVehicleType, setSeats, setDays, setReturnJourney, setReturnTime, setDate, setTime, setConfirmOpen 
+  }), [setSelected, setPickup, setDrop, setHasVehicle, setVehicleType, setSeats, setDays, setReturnJourney, setReturnTime, setDate, setTime, setConfirmOpen]);
+
+  return useMemo(() => ({
+    state,
+    set,
+    swap, 
+    findMatch, 
+    confirmPost,
+  }), [state, set, swap, findMatch, confirmPost]);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -294,7 +313,7 @@ function DesktopHome() {
 function RideForm({ form, className = "", embedded = false }: { form: ReturnType<typeof useRideForm>; className?: string; embedded?: boolean }) {
   const { state, set, swap, findMatch } = form;
   void embedded;
-  const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const dayLabels = useMemo(() => ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], []);
 
   const presets = useMemo(() => [
     { label: "Mon–Fri", days: ["Mon","Tue","Wed","Thu","Fri"] },
@@ -408,11 +427,11 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
         <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-border/60 bg-background/40 p-3">
           <label className="block">
             <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Date</span>
-            <input type="date" value={state.date} onChange={(e)=>setDate(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
+            <input type="date" value={state.date} onChange={(e)=>set.setDate(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
           </label>
           <label className="block">
             <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Time</span>
-            <input type="time" value={state.time} onChange={(e)=>setTime(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
+            <input type="time" value={state.time} onChange={(e)=>set.setTime(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
           </label>
           <p className="col-span-2 flex items-center gap-1 text-[11px] text-muted-foreground">
             <CalendarDays className="size-3" /> For all planned, scheduled & city-to-city trips.
