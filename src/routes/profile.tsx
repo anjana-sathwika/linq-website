@@ -71,10 +71,12 @@ function Profile() {
           {/* SOS Button */}
           <button
             onClick={handleSOS}
-            className="flex size-12 items-center justify-center rounded-full bg-red-500 text-white transition hover:bg-red-600"
-            title="Emergency SOS"
+            className="group relative flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white shadow-lg shadow-red-500/25 transition-all duration-300 hover:scale-105 hover:shadow-red-500/40 hover:from-red-600 hover:to-red-700"
+            title="Emergency SOS - Click for immediate help"
           >
-            <AlertTriangle className="size-6" />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-400 to-red-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 animate-pulse" />
+            <AlertTriangle className="relative z-10 size-6 drop-shadow-lg" />
+            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-xs font-bold uppercase tracking-wider">SOS</span>
           </button>
         </div>
 
@@ -82,9 +84,17 @@ function Profile() {
         <section className="mt-5 flex items-center gap-4 rounded-3xl bg-card p-5">
           <div className="size-16 rounded-full bg-gradient-to-br from-primary/70 to-primary/20 ring-2 ring-primary/40" />
           <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <p className="text-lg font-semibold">{profile?.name || "User"}</p>
-              <BadgeCheck className="size-4 text-primary" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <p className="text-lg font-semibold">{profile?.name || "User"}</p>
+                <BadgeCheck className="size-4 text-primary" />
+              </div>
+              <button
+                onClick={() => navigate({ to: "/onboarding" })}
+                className="rounded-full bg-secondary px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
+              >
+                <Settings className="size-3" />
+              </button>
             </div>
             <p className="text-sm text-muted-foreground">
               {profile?.age ? `${profile.age} years` : ""} · 
@@ -95,29 +105,7 @@ function Profile() {
               <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{profile.bio}</p>
             )}
           </div>
-          <button 
-            onClick={() => navigate({ to: "/onboarding" })}
-            className="rounded-full bg-secondary px-3 py-1.5 text-xs font-medium"
-          >
-            Edit
-          </button>
         </section>
-
-        {/* Emergency Contact */}
-        {profile?.emergencyContact && (
-          <section className="mt-5 rounded-2xl border border-orange-200 bg-orange-50 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <AlertTriangle className="size-4 text-orange-600" />
-              <h3 className="font-semibold text-orange-700">Emergency Contact</h3>
-            </div>
-            <p className="text-sm">
-              <strong>{profile.emergencyContactName || "Emergency Contact"}</strong>: {profile.emergencyContact}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              This contact will be notified if you use the SOS feature
-            </p>
-          </section>
-        )}
 
         {/* Appearance */}
         <section className="mt-7">
