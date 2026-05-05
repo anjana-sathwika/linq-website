@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, useCallback, type ReactNode } from "react";
+import { supabase } from "./supabase";
 
 export type Plan = "free" | "weekly" | "monthly";
 export type ConnectMethod = "instagram" | "whatsapp" | "telegram";
@@ -13,6 +14,7 @@ export interface Location {
 }
 
 export type Profile = {
+  id?: string;
   name: string;
   email: string;
   phone: string;
@@ -30,11 +32,9 @@ export type RideQuery = {
   hasVehicle: boolean;
   vehicleType?: VehicleType;
   seats: number;
-  // daily
-  days?: string[]; // e.g. ['Mon','Tue']
+  days?: string[];
   returnJourney?: boolean;
   returnTime?: string;
-  // long / planned
   date?: string;
   time?: string;
 };
@@ -66,16 +66,14 @@ type Ctx = {
   unlockedIds: string[];
   plan: Plan;
   planExpiry: number | null;
-  // pending profile creation flow
   pendingProfile: { email: string; name: string } | null;
-  // last query (used to drive matches page)
   lastQuery: RideQuery | null;
 
   signInWithGoogle: () => void;
-  completeProfile: (p: Profile) => void;
-  signOut: () => void;
+  completeProfile: (p: Profile) => Promise<void>;
+  signOut: () => Promise<void>;
   setLastQuery: (q: RideQuery) => void;
-  postRide: (q: RideQuery) => RidePost;
+  postRide: (q: RideQuery) => Promise<RidePost | void>;
   unlock: (id: string) => void;
   canUnlock: () => boolean;
   upgrade: (p: Plan) => void;
@@ -83,29 +81,20 @@ type Ctx = {
 
 const StoreCtx = createContext<Ctx | null>(null);
 
-const KEY = "linq-store-v1";
+const KEY = "linq-local-store";
 
-type Persisted = {
-  profile: Profile | null;
-  posts: RidePost[];
-  unlockedIds: string[];
-  plan: Plan;
-  planExpiry: number | null;
-};
-
-function load(): Persisted {
-  if (typeof window === "undefined")
-    return { profile: null, posts: [], unlockedIds: [], plan: "free", planExpiry: null };
+function loadLocal() {
+  if (typeof window === "undefined") return { unlockedIds: [], plan: "free" as Plan, planExpiry: null };
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) throw 0;
-    return JSON.parse(raw);
+    return raw ? JSON.parse(raw) : { unlockedIds: [], plan: "free", planExpiry: null };
   } catch {
-    return { profile: null, posts: [], unlockedIds: [], plan: "free", planExpiry: null };
+    return { unlockedIds: [], plan: "free", planExpiry: null };
   }
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
+  const [sessionUser, setSessionUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<RidePost[]>([]);
   const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
@@ -113,67 +102,119 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [planExpiry, setPlanExpiry] = useState<number | null>(null);
   const [pendingProfile, setPendingProfile] = useState<{ email: string; name: string } | null>(null);
   const [lastQuery, setLastQuery] = useState<RideQuery | null>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
 
+  // Initial load of Supabase session and Local unlocks/subscriptions
   useEffect(() => {
-    const d = load();
-    setProfile(d.profile);
-    setPosts(d.posts);
-    setUnlockedIds(d.unlockedIds);
-    setPlan(d.plan);
-    setPlanExpiry(d.planExpiry);
+    const local = loadLocal();
+    setUnlockedIds(local.unlockedIds || []);
+    setPlan(local.plan || "free");
+    setPlanExpiry(local.planExpiry || null);
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSessionUser(session?.user ?? null);
+      if (session?.user) checkProfile(session.user);
+      else setIsInitializing(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSessionUser(session?.user ?? null);
+      if (session?.user) checkProfile(session.user);
+      else {
+        setProfile(null);
+        setPendingProfile(null);
+        setPosts([]);
+        setIsInitializing(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Debounced localStorage write to prevent blocking on every keystroke
+  // Save local subscription state continuously
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      const data: Persisted = { profile, posts, unlockedIds, plan, planExpiry };
-      localStorage.setItem(KEY, JSON.stringify(data));
-    }, 300); // 300ms debounce
+      localStorage.setItem(KEY, JSON.stringify({ unlockedIds, plan, planExpiry }));
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [unlockedIds, plan, planExpiry]);
 
-    // Only clear timeout on unmount, not on every dependency change
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [profile, posts, unlockedIds, plan, planExpiry]);
+  const checkProfile = async (user: any) => {
+    const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+    if (data && !error) {
+      setProfile(data);
+      setPendingProfile(null);
+      // Fetch user's posts
+      const { data: userPosts } = await supabase.from("rides").select("*").eq("owner_id", user.id);
+      if (userPosts) setPosts(userPosts);
+    } else {
+      setPendingProfile({ email: user.email, name: user.user_metadata?.full_name || "" });
+    }
+    setIsInitializing(false);
+  };
 
-  // Memoize context value to prevent unnecessary re-renders
   const value = useMemo<Ctx>(() => {
     const signInWithGoogle = () => {
-      // mock: simulate google returning name+email
-      setPendingProfile({ email: "you@gmail.com", name: "Aanya M." });
+      supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
     };
 
-    const completeProfile = (p: Profile) => {
-      setProfile(p);
-      setPendingProfile(null);
+    const completeProfile = async (p: Profile) => {
+      if (!sessionUser) return;
+      const { error } = await supabase.from("profiles").upsert({
+        id: sessionUser.id,
+        ...p,
+      });
+      if (!error) {
+        setProfile({ id: sessionUser.id, ...p });
+        setPendingProfile(null);
+      } else {
+        console.error("Failed to create profile", error);
+      }
     };
 
-    const signOut = () => {
+    const signOut = async () => {
+      await supabase.auth.signOut();
       setProfile(null);
+      setPendingProfile(null);
       setUnlockedIds([]);
       setPlan("free");
       setPlanExpiry(null);
     };
 
-    const postRide = (q: RideQuery) => {
-      const post: RidePost = {
-        ...q,
-        id: "post-" + Math.random().toString(36).slice(2, 9),
-        ownerName: profile?.name ?? "You",
+    const postRide = async (q: RideQuery) => {
+      if (!profile || !sessionUser) return;
+      const postData = {
+        owner_id: sessionUser.id,
+        ownerName: profile.name,
         createdAt: Date.now(),
+        ...q,
+        // Supabase JSONB helps store the nested Location object easily without complex Postgres types initially
+        pickup: q.pickup,
+        drop: q.drop,
       };
-      setPosts((prev) => [post, ...prev]);
-      return post;
+
+      const { data, error } = await supabase.from("rides").insert([postData]).select().single();
+      if (!error && data) {
+        setPosts((prev) => [data, ...prev]);
+        return data;
+      } else {
+        console.error("Failed to post ride", error);
+      }
     };
 
     const unlock = (id: string) => setUnlockedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
 
-    const canUnlock = useCallback(() => {
+    const canUnlock = () => {
       const now = Date.now();
       if (plan === "monthly" && planExpiry && planExpiry > now) return true;
       if (plan === "weekly" && planExpiry && planExpiry > now) return unlockedIds.length < 10;
       return unlockedIds.length < 2;
-    }, [plan, planExpiry, unlockedIds]);
+    };
 
     const upgrade = (p: Plan) => {
       setPlan(p);
@@ -190,7 +231,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       unlockedIds,
       plan,
       planExpiry,
-      pendingProfile,
+      pendingProfile: isInitializing ? null : pendingProfile,
       lastQuery,
       signInWithGoogle,
       completeProfile,
@@ -201,7 +242,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       canUnlock,
       upgrade,
     };
-  }, [profile, posts, unlockedIds, plan, planExpiry, pendingProfile, lastQuery]);
+  }, [profile, posts, unlockedIds, plan, planExpiry, pendingProfile, lastQuery, sessionUser, isInitializing]);
 
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
 }
@@ -212,15 +253,13 @@ export function useStore() {
   return c;
 }
 
-// Mock match generator based on a query
+// Retain simple mock match generator until PostGIS geospatial matching is required
 export function generateMatches(q: RideQuery | null): MatchProfile[] {
   const base: Omit<MatchProfile, "pickup" | "drop">[] = [
     { id: "m1", name: "Aarav S.", avatar: "from-blue-500/60 to-indigo-500/20", overlapPct: 92, timing: "Matches your timing", bio: "Engineer, calm driver, music lover.", connect: "whatsapp", connectId: "+91 98xxxx1122", rating: 4.9 },
     { id: "m2", name: "Meera K.", avatar: "from-pink-500/60 to-purple-500/20", overlapPct: 87, timing: "±10 min flexible", bio: "Designer, loves indie playlists.", connect: "instagram", connectId: "@meera.k", rating: 4.8 },
     { id: "m3", name: "Rohan P.", avatar: "from-emerald-500/60 to-teal-500/20", overlapPct: 78, timing: "Same window daily", bio: "Student, prefers AC rides.", connect: "telegram", connectId: "@rohan_p", rating: 5.0 },
     { id: "m4", name: "Saanvi G.", avatar: "from-amber-500/60 to-orange-500/20", overlapPct: 74, timing: "Weekday commuter", bio: "Analyst, quiet rides preferred.", connect: "whatsapp", connectId: "+91 90xxxx7788", rating: 4.7 },
-    { id: "m5", name: "Karan V.", avatar: "from-cyan-500/60 to-blue-500/20", overlapPct: 69, timing: "Returns same way", bio: "Founder, early bird.", connect: "instagram", connectId: "@karanv", rating: 4.6 },
-    { id: "m6", name: "Diya N.", avatar: "from-rose-500/60 to-pink-500/20", overlapPct: 65, timing: "Flexible weekends", bio: "Teacher, friendly conversations.", connect: "telegram", connectId: "@diyan", rating: 4.8 },
   ];
 
   const defaultPickup: Location = { name: "Bandra West", lat: 19.0596, lng: 72.8295 };
