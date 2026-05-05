@@ -23,6 +23,8 @@ export type Profile = {
   bio: string;
   connect: ConnectMethod;
   connectId: string;
+  emergencyContact?: string; // Emergency contact number
+  emergencyContactName?: string; // Emergency contact name
 };
 
 export type RideQuery = {

@@ -12,6 +12,7 @@ import {
   Star,
   BadgeCheck,
   MapPin,
+  ChevronRight,
   Sparkles,
   Sun,
   Moon,
@@ -64,7 +65,7 @@ function useRideForm() {
   const { signedIn, setLastQuery, postRide } = useStore();
   const navigate = useNavigate();
 
-  const [selected, setSelected] = useState<RideType>("instant");
+  const [selected, setSelected] = useState<RideType>("daily");
   const [pickup, setPickup] = useState<Location | null>(null);
   const [drop, setDrop] = useState<Location | null>(null);
   const [hasVehicle, setHasVehicle] = useState(false);
@@ -159,7 +160,13 @@ function MobileHome() {
 
       {/* Ride type */}
       <section className="mt-7">
-        <h2 className="mb-3 text-lg font-semibold">Choose ride type</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold">Choose ride type</h2>
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <span className="text-xs">Swipe</span>
+            <ChevronRight className="size-4" />
+          </div>
+        </div>
         <div className="-mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden after:w-2 after:shrink-0">
           {rideTypes.map((r) => (
             <RideCard key={r.id} r={r} active={state.selected === r.id} onClick={() => set.setSelected(r.id)} />

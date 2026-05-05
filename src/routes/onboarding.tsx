@@ -24,9 +24,11 @@ function Onboarding() {
   const [bio, setBio] = useState("");
   const [connect, setConnect] = useState<ConnectMethod>("whatsapp");
   const [connectId, setConnectId] = useState("");
+  const [emergencyContact, setEmergencyContact] = useState("");
+  const [emergencyContactName, setEmergencyContactName] = useState("");
 
   const bioWords = bio.trim() ? bio.trim().split(/\s+/).length : 0;
-  const valid = name && phone && age && gender && bio && bioWords <= 20 && connectId;
+  const valid = name && phone && age && gender && bio && bioWords <= 20 && connectId && emergencyContact && emergencyContactName;
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,6 +42,8 @@ function Onboarding() {
       bio,
       connect,
       connectId,
+      emergencyContact,
+      emergencyContactName,
     });
     setCreated(true);
     setTimeout(() => navigate({ to: "/" }), 1400);
@@ -50,8 +54,13 @@ function Onboarding() {
       <main className="flex min-h-screen items-center justify-center bg-background px-5">
         <div className="flex flex-col items-center gap-4 rounded-3xl border border-border bg-card p-10 text-center">
           <CheckCircle2 className="size-16 text-primary" />
-          <h1 className="text-2xl font-bold">Account created!</h1>
-          <p className="text-sm text-muted-foreground">Taking you to search…</p>
+          <h2 className="text-xl font-semibold">Account Created Successfully! 🎉</h2>
+          <p className="text-muted-foreground">
+            Welcome to linQ! Your profile has been created and you're all set to start sharing rides.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Redirecting you to home page...
+          </p>
         </div>
       </main>
     );
@@ -144,6 +153,24 @@ function Onboarding() {
               value={connectId}
               onChange={(e) => setConnectId(e.target.value)}
               placeholder={connect === "whatsapp" ? "+91 …" : "@yourhandle"}
+              className="input"
+            />
+          </Field>
+
+          <Field label="Emergency Contact Name">
+            <input
+              value={emergencyContactName}
+              onChange={(e) => setEmergencyContactName(e.target.value)}
+              placeholder="e.g. John Doe"
+              className="input"
+            />
+          </Field>
+
+          <Field label="Emergency Contact Number">
+            <input
+              value={emergencyContact}
+              onChange={(e) => setEmergencyContact(e.target.value)}
+              placeholder="+91 98xxxx1122"
               className="input"
             />
           </Field>
