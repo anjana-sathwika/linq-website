@@ -24,6 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { BottomNav } from "@/components/bottom-nav";
+import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/lib/theme";
 import { useStore, type RideType, type RideQuery, type VehicleType, generateMatches } from "@/lib/store";
 
@@ -312,12 +313,12 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
         <div className="flex-1 space-y-2">
           <div>
             <p className="text-[10px] font-medium tracking-wider text-muted-foreground">PICKUP</p>
-            <input value={state.pickup} onChange={(e) => set.setPickup(e.target.value)} placeholder="Enter pickup location" className="w-full bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/70 placeholder:font-medium" />
+            <input value={state.pickup} onChange={(e) => set.setPickup(e.target.value || "")} placeholder="Enter pickup location" className="w-full bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/70 placeholder:font-medium" />
           </div>
           <div className="h-px bg-border" />
           <div>
             <p className="text-[10px] font-medium tracking-wider text-muted-foreground">DROP</p>
-            <input value={state.drop} onChange={(e) => set.setDrop(e.target.value)} placeholder="Where are you going?" className="w-full bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/70 placeholder:font-medium" />
+            <input value={state.drop} onChange={(e) => set.setDrop(e.target.value || "")} placeholder="Where are you going?" className="w-full bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/70 placeholder:font-medium" />
           </div>
         </div>
         <button onClick={swap} className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary">
@@ -331,7 +332,7 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
           <span className="flex items-center gap-2 text-sm font-medium">
             <Car className="size-4 text-primary" /> Do you have a vehicle?
           </span>
-          <Switch on={state.hasVehicle} onChange={set.setHasVehicle} />
+          <Switch checked={state.hasVehicle} onCheckedChange={set.setHasVehicle} />
         </div>
         {state.hasVehicle && (
           <>
@@ -393,10 +394,10 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
             <span className="flex items-center gap-2 text-sm font-medium">
               <RefreshCw className="size-4 text-primary" /> Open to return journey?
             </span>
-            <Switch on={state.returnJourney} onChange={set.setReturnJourney} />
+            <Switch checked={state.returnJourney} onCheckedChange={set.setReturnJourney} />
           </div>
           {state.returnJourney && (
-            <input type="time" value={state.returnTime} onChange={(e)=>set.setReturnTime(e.target.value)}
+            <input type="time" value={state.returnTime} onChange={(e)=>set.setReturnTime(e.target.value || "")}
               className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm" />
           )}
         </div>
@@ -407,11 +408,11 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
         <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-border/60 bg-background/40 p-3">
           <label className="block">
             <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Date</span>
-            <input type="date" value={state.date} onChange={(e)=>set.setDate(e.target.value)} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
+            <input type="date" value={state.date} onChange={(e)=>setDate(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
           </label>
           <label className="block">
             <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Time</span>
-            <input type="time" value={state.time} onChange={(e)=>set.setTime(e.target.value)} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
+            <input type="time" value={state.time} onChange={(e)=>setTime(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
           </label>
           <p className="col-span-2 flex items-center gap-1 text-[11px] text-muted-foreground">
             <CalendarDays className="size-3" /> For all planned, scheduled & city-to-city trips.
@@ -472,13 +473,6 @@ function RideCard({ r, active, onClick, fullWidth }: { r: typeof rideTypes[numbe
   );
 }
 
-function Switch({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button onClick={() => onChange(!on)} className={`relative h-6 w-11 rounded-full transition ${on ? "bg-primary" : "bg-secondary"}`}>
-      <span className={`absolute top-0.5 size-5 rounded-full bg-background shadow transition ${on ? "left-[1.4rem]" : "left-0.5"}`} />
-    </button>
-  );
-}
 
 function NumberStep({ value, setValue, min, max }: { value: number; setValue: (n: number) => void; min: number; max: number }) {
   return (
