@@ -141,6 +141,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/search'
     | '/trips'
+    | '/payments'
+    | '/safety'
+    | '/query'
   id:
     | '__root__'
     | '/'
@@ -151,90 +154,100 @@ export interface FileRouteTypes {
     | '/profile'
     | '/search'
     | '/trips'
+    | '/payments'
+    | '/safety'
+    | '/query'
   fileRoutesById: FileRoutesById
-}
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  LoginRoute: typeof LoginRoute
-  MatchesRoute: typeof MatchesRoute
-  OnboardingRoute: typeof OnboardingRoute
-  PricingRoute: typeof PricingRoute
-  ProfileRoute: typeof ProfileRoute
-  SearchRoute: typeof SearchRoute
-  TripsRoute: typeof TripsRoute
 }
 
 declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/trips': {
-      id: '/trips'
-      path: '/trips'
-      fullPath: '/trips'
-      preLoaderRoute: typeof TripsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/matches': {
-      id: '/matches'
-      path: '/matches'
-      fullPath: '/matches'
-      preLoaderRoute: typeof MatchesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+  interface FileRoutesByFullPath {
+    '/': typeof IndexRoute
+    '/login': typeof LoginRoute
+    '/matches': typeof MatchesRoute
+    '/onboarding': typeof OnboardingRoute
+    '/pricing': typeof PricingRoute
+    '/profile': typeof ProfileRoute
+    '/search': typeof SearchRoute
+    '/trips': typeof TripsRoute
+    '/payments': typeof PaymentsRoute
+    '/safety': typeof SafetyRoute
+    '/query': typeof QueryRoute
+  }
+  interface FileRoutesByTo {
+    '/': typeof IndexRoute
+    '/login': typeof LoginRoute
+    '/matches': typeof MatchesRoute
+    '/onboarding': typeof OnboardingRoute
+    '/pricing': typeof PricingRoute
+    '/profile': typeof ProfileRoute
+    '/search': typeof SearchRoute
+    '/trips': typeof TripsRoute
+    '/payments': typeof PaymentsRoute
+    '/safety': typeof SafetyRoute
+    '/query': typeof QueryRoute
+  }
+  interface FileRoutesById {
+    __root__: typeof rootRouteImport
+    '/': typeof IndexRoute
+    '/login': typeof LoginRoute
+    '/matches': typeof MatchesRoute
+    '/onboarding': typeof OnboardingRoute
+    '/pricing': typeof PricingRoute
+    '/profile': typeof ProfileRoute
+    '/search': typeof SearchRoute
+    '/trips': typeof TripsRoute
+    '/payments': typeof PaymentsRoute
+    '/safety': typeof SafetyRoute
+    '/query': typeof QueryRoute
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  LoginRoute: LoginRoute,
-  MatchesRoute: MatchesRoute,
-  OnboardingRoute: OnboardingRoute,
-  PricingRoute: PricingRoute,
-  ProfileRoute: ProfileRoute,
-  SearchRoute: SearchRoute,
-  TripsRoute: TripsRoute,
+export interface RootRouteChildren {
+  index: typeof IndexRoute
+  login: typeof LoginRoute
+  matches: typeof MatchesRoute
+  onboarding: typeof OnboardingRoute
+  pricing: typeof PricingRoute
+  profile: typeof ProfileRoute
+  search: typeof SearchRoute
+  trips: typeof TripsRoute
+  payments: typeof PaymentsRoute
+  safety: typeof SafetyRoute
+  query: typeof QueryRoute
 }
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+
+const rootRouteChildren: RootRouteChildren = {
+  index: IndexRoute,
+  login: LoginRoute,
+  matches: MatchesRoute,
+  onboarding: OnboardingRoute,
+  pricing: PricingRoute,
+  profile: ProfileRoute,
+  search: SearchRoute,
+  trips: TripsRoute,
+  payments: PaymentsRoute,
+  safety: SafetyRoute,
+  query: QueryRoute,
+}
+
+export { rootRouteChildren }
+
+export const routeTree = rootRouteImport.update({
+  id: '__root__',
+  path: '/',
+  getParentRoute: () => undefined,
+  children: [
+    IndexRoute,
+    LoginRoute,
+    MatchesRoute,
+    OnboardingRoute,
+    PricingRoute,
+    ProfileRoute,
+    SearchRoute,
+    TripsRoute,
+    PaymentsRoute,
+    SafetyRoute,
+    QueryRoute,
+  ],
+} as any)

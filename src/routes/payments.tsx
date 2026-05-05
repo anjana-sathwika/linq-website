@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
 import { BottomNav } from "@/components/bottom-nav";
 import { useStore } from "@/lib/store";
 import { ArrowLeft, CreditCard, Calendar, Clock, CheckCircle } from "lucide-react";
@@ -12,13 +11,6 @@ export const Route = createFileRoute("/payments")({
 function Payments() {
   const { plan, planExpiry, profile } = useStore();
   const navigate = useNavigate();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
 
   const mockPayments = [
     {
