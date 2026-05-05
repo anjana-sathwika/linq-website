@@ -35,14 +35,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  return (
-    <main className="min-h-screen bg-background text-foreground">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold">linQ — Go Together Rides</h1>
-        <p className="mt-4 text-lg">Verified ride-sharing carpools</p>
-      </div>
-    </main>
-  );
+  return <Home />;
 }
 
 const rideTypes: { id: RideType; tag: string; title: string; subtitle: string; Icon: typeof Zap }[] = [
