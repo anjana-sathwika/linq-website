@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { BottomNav } from "@/components/bottom-nav";
 import { useTheme, type Theme } from "@/lib/theme";
 import { useStore } from "@/lib/store";
-import { BadgeCheck, ChevronRight, Moon, Sun, Settings, CreditCard, Shield, LogOut, AlertTriangle } from "lucide-react";
+import { BadgeCheck, ChevronRight, Moon, Sun, Pencil, CreditCard, Shield, LogOut, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile — linQ" }] }),
@@ -75,7 +75,7 @@ function Profile() {
             title="Emergency SOS - Click for immediate help"
           >
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-400 to-red-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 animate-pulse" />
-            <AlertTriangle className="relative z-10 size-6 drop-shadow-lg" />
+            <AlertTriangle className="relative z-10 size-5 drop-shadow-lg" />
             <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-xs font-bold uppercase tracking-wider">SOS</span>
           </button>
         </div>
@@ -93,7 +93,7 @@ function Profile() {
                 onClick={() => navigate({ to: "/onboarding" })}
                 className="rounded-full bg-secondary px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
               >
-                <Settings className="size-3" />
+                <Pencil className="size-3" />
               </button>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -110,26 +110,25 @@ function Profile() {
         {/* Appearance */}
         <section className="mt-7">
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">APPEARANCE</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {themes.map((t) => {
-              const active = theme === t.id;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => setTheme(t.id)}
-                  className={`flex flex-col items-center gap-2 rounded-2xl border p-3 text-center transition ${
-                    active ? "border-primary bg-card" : "border-border bg-card/60"
-                  }`}
-                >
-                  <span
-                    className="size-12 rounded-full ring-2 ring-border"
-                    style={{ background: t.swatch }}
-                  />
-                  <span className="text-sm font-semibold">{t.label}</span>
-                  <span className="text-[10px] text-muted-foreground leading-tight">{t.desc}</span>
-                </button>
-              );
-            })}
+          <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
+            <div className="flex items-center gap-3">
+              <Sun className="size-5 text-yellow-500" />
+              <span className="text-sm font-medium">Day</span>
+            </div>
+            <button
+              onClick={() => setTheme(theme === "sapphire" ? "sapphire-dark" : "sapphire")}
+              className="relative h-6 w-11 rounded-full bg-muted transition-colors duration-300"
+            >
+              <div
+                className={`absolute top-0.5 h-5 w-5 rounded-full bg-primary transition-transform duration-300 ${
+                  theme === "sapphire-dark" ? "translate-x-5" : "translate-x-0.5"
+                }`}
+              />
+            </button>
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium">Night</span>
+              <Moon className="size-5 text-blue-500" />
+            </div>
           </div>
         </section>
 
@@ -147,7 +146,7 @@ function Profile() {
               action: () => navigate({ to: "/safety" })
             },
             { 
-              Icon: Settings, 
+              Icon: Pencil, 
               label: "Raise a Query",
               action: () => navigate({ to: "/query" })
             },
