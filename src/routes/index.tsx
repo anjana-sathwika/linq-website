@@ -31,16 +31,19 @@ import { useTheme } from "@/lib/theme";
 import { useStore, type RideType, type RideQuery, type VehicleType, type Location, generateMatches } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "linQ — Go Together Rides" },
-      { name: "description", content: "Go Together Rides - Verified ride-sharing for instant trips, daily commutes, and planned long-distance journeys." },
-      { property: "og:title", content: "linQ — Go Together Rides" },
-      { property: "og:description", content: "Go Together Rides - Verified ride-sharing carpools." },
-    ],
-  }),
-  component: Home,
+  component: Index,
 });
+
+function Index() {
+  return (
+    <main className="min-h-screen bg-background text-foreground">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold">linQ — Go Together Rides</h1>
+        <p className="mt-4 text-lg">Verified ride-sharing carpools</p>
+      </div>
+    </main>
+  );
+}
 
 const rideTypes: { id: RideType; tag: string; title: string; subtitle: string; Icon: typeof Zap }[] = [
   { id: "instant", tag: "NOW", title: "Instant", subtitle: "Match in minutes", Icon: Zap },

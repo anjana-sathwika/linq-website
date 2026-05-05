@@ -233,21 +233,16 @@ const rootRouteChildren: RootRouteChildren = {
 
 export { rootRouteChildren }
 
-export const routeTree = rootRouteImport.update({
-  id: '__root__',
-  path: '/',
-  getParentRoute: () => undefined,
-  children: [
-    IndexRoute,
-    LoginRoute,
-    MatchesRoute,
-    OnboardingRoute,
-    PricingRoute,
-    ProfileRoute,
-    SearchRoute,
-    TripsRoute,
-    PaymentsRoute,
-    SafetyRoute,
-    QueryRoute,
-  ],
-} as any)
+export const routeTree = rootRouteImport.addChildren([
+  IndexRoute,
+  LoginRoute,
+  MatchesRoute,
+  OnboardingRoute,
+  PricingRoute,
+  ProfileRoute,
+  SearchRoute,
+  TripsRoute,
+  PaymentsRoute,
+  SafetyRoute,
+  QueryRoute,
+])
