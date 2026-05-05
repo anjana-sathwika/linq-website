@@ -78,9 +78,9 @@ function useRideForm() {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   // Memoize swap function to prevent recreation
-  const swap = useCallback(() => { 
-    setPickup(drop); 
-    setDrop(pickup); 
+  const swap = useCallback(() => {
+    setPickup(drop);
+    setDrop(pickup);
   }, [drop, pickup]);
 
   // Memoize buildQuery function
@@ -107,20 +107,20 @@ function useRideForm() {
   }, [buildQuery, signedIn, setLastQuery, postRide, navigate]);
 
   // Memoize state object to prevent recreation
-  const state = useMemo(() => ({ 
-    selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time, confirmOpen 
+  const state = useMemo(() => ({
+    selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time, confirmOpen
   }), [selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time, confirmOpen]);
 
   // Memoize setters object to prevent recreation
-  const set = useMemo(() => ({ 
-    setSelected, setPickup, setDrop, setHasVehicle, setVehicleType, setSeats, setDays, setReturnJourney, setReturnTime, setDate, setTime, setConfirmOpen 
+  const set = useMemo(() => ({
+    setSelected, setPickup, setDrop, setHasVehicle, setVehicleType, setSeats, setDays, setReturnJourney, setReturnTime, setDate, setTime, setConfirmOpen
   }), [setSelected, setPickup, setDrop, setHasVehicle, setVehicleType, setSeats, setDays, setReturnJourney, setReturnTime, setDate, setTime, setConfirmOpen]);
 
   return useMemo(() => ({
     state,
     set,
-    swap, 
-    findMatch, 
+    swap,
+    findMatch,
     confirmPost,
   }), [state, set, swap, findMatch, confirmPost]);
 }
@@ -133,7 +133,7 @@ function MobileHome() {
   const { state, set, swap, findMatch, confirmPost } = form;
 
   return (
-    <div className="mx-auto w-full max-w-md px-5 pt-6 pb-32">
+    <div className="mx-auto w-full max-w-md px-5 pt-6 pb-40">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="size-11 rounded-full bg-gradient-to-br from-primary/70 to-primary/30 ring-2 ring-primary/40" />
@@ -160,7 +160,7 @@ function MobileHome() {
       {/* Ride type */}
       <section className="mt-7">
         <h2 className="mb-3 text-lg font-semibold">Choose ride type</h2>
-        <div className="-mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="-mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden after:w-2 after:shrink-0">
           {rideTypes.map((r) => (
             <RideCard key={r.id} r={r} active={state.selected === r.id} onClick={() => set.setSelected(r.id)} />
           ))}
@@ -226,7 +226,7 @@ function DesktopHome() {
             <p className="mt-6 text-sm font-semibold tracking-[0.25em] text-primary">WHERE TO TODAY?</p>
             <h1 className="mt-3 text-7xl font-bold leading-[1.02] tracking-tight">
               Go Together<br />
-              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">Rides</span>
+              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent pb-2">Rides</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Match with verified riders heading the same way at the same time. Instant pickups,
@@ -319,8 +319,8 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
   const dayLabels = useMemo(() => ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], []);
 
   const presets = useMemo(() => [
-    { label: "Mon–Fri", days: ["Mon","Tue","Wed","Thu","Fri"] },
-    { label: "Mon–Sat", days: ["Mon","Tue","Wed","Thu","Fri","Sat"] },
+    { label: "Mon–Fri", days: ["Mon", "Tue", "Wed", "Thu", "Fri"] },
+    { label: "Mon–Sat", days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] },
   ], []);
 
   return (
@@ -351,7 +351,7 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
             />
           </div>
         </div>
-        <button onClick={swap} className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary">
+        <button onClick={swap} className="flex size-10 shrink-0 items-center justify-center self-center rounded-full bg-secondary">
           <ArrowUpDown className="size-4" />
         </button>
       </div>
@@ -377,11 +377,10 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
                   <button
                     key={type}
                     onClick={() => set.setVehicleType(type)}
-                    className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-                      state.vehicleType === type
+                    className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${state.vehicleType === type
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border bg-background text-muted-foreground hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     <Icon className="size-3" />
                     {label}
@@ -405,7 +404,7 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
             {dayLabels.map((d) => {
               const on = state.days.includes(d);
               return (
-                <button key={d} onClick={() => set.setDays(on ? state.days.filter(x=>x!==d) : [...state.days, d])}
+                <button key={d} onClick={() => set.setDays(on ? state.days.filter(x => x !== d) : [...state.days, d])}
                   className={`rounded-full border px-3 py-1 text-xs font-medium transition ${on ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background"}`}>
                   {d}
                 </button>
@@ -427,7 +426,7 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
             <Switch checked={state.returnJourney} onCheckedChange={set.setReturnJourney} />
           </div>
           {state.returnJourney && (
-            <input type="time" value={state.returnTime} onChange={(e)=>set.setReturnTime(e.target.value || "")}
+            <input type="time" value={state.returnTime} onChange={(e) => set.setReturnTime(e.target.value || "")}
               className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm" />
           )}
         </div>
@@ -438,11 +437,11 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
         <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-border/60 bg-background/40 p-3">
           <label className="block">
             <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Date</span>
-            <input type="date" value={state.date} onChange={(e)=>set.setDate(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
+            <input type="date" value={state.date} onChange={(e) => set.setDate(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
           </label>
           <label className="block">
             <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Time</span>
-            <input type="time" value={state.time} onChange={(e)=>set.setTime(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
+            <input type="time" value={state.time} onChange={(e) => set.setTime(e.target.value || "")} className="w-full rounded-lg border border-border bg-background px-2 py-2 text-sm" />
           </label>
           <p className="col-span-2 flex items-center gap-1 text-[11px] text-muted-foreground">
             <CalendarDays className="size-3" /> For all planned, scheduled & city-to-city trips.
@@ -451,7 +450,7 @@ function RideForm({ form, className = "", embedded = false }: { form: ReturnType
       )}
 
       <button onClick={findMatch} disabled={!state.pickup || !state.drop}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-4 font-semibold text-background transition hover:opacity-90 disabled:opacity-50">
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50 shadow-md">
         <Search className="size-4" /> Find a match
       </button>
     </div>
@@ -487,8 +486,8 @@ function ConfirmPostModal({ onCancel, onChoose }: { onCancel: () => void; onChoo
 function RideCard({ r, active, onClick, fullWidth }: { r: typeof rideTypes[number]; active: boolean; onClick: () => void; fullWidth?: boolean }) {
   return (
     <button onClick={onClick}
-      style={active ? { background: "color-mix(in oklab, var(--color-primary) 18%, var(--color-card))", borderColor: "var(--color-primary)", boxShadow: "0 10px 30px -12px color-mix(in oklab, var(--color-primary) 45%, transparent)" } : undefined}
-      className={`relative flex h-44 ${fullWidth ? "w-full" : "min-w-[10.5rem] shrink-0 snap-start"} flex-col justify-between rounded-3xl border p-4 text-left transition ${active ? "border-primary" : "border-border bg-card/60 hover:border-primary/40"}`}>
+      className={`relative flex h-44 ${fullWidth ? "w-full" : "min-w-[10.5rem] shrink-0 snap-start"} flex-col justify-between rounded-3xl border p-4 text-left transition ${active ? "border-primary bg-primary/10 shadow-[0_10px_30px_-12px_rgba(var(--color-primary),0.4)]" : "border-border bg-card/60 hover:border-primary/40"
+        }`}>
       <div className="flex items-start justify-between">
         <span className="rounded-full bg-secondary px-2.5 py-1 text-[10px] font-medium tracking-wider text-muted-foreground">{r.tag}</span>
         <span className={`flex size-9 items-center justify-center rounded-full ${active ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"}`}>

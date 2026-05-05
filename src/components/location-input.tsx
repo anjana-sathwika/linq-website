@@ -38,10 +38,10 @@ const DEBOUNCE_DELAY = 400;
 const searchCache = new Map<string, NominatimResult[]>();
 const CACHE_EXPIRY = 5 * 60 * 1000; // 5 minutes
 
-export function LocationInput({ 
-  value, 
-  onChange, 
-  placeholder = "Enter location...", 
+export function LocationInput({
+  value,
+  onChange,
+  placeholder = "Enter location...",
   disabled = false,
   className = "",
   label
@@ -51,8 +51,8 @@ export function LocationInput({
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [abortController, setAbortController] = useState<AbortController | null>(null);
-  
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLUListElement>(null);
 
@@ -73,7 +73,7 @@ export function LocationInput({
         }
       }
     }, CACHE_EXPIRY);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -89,7 +89,7 @@ export function LocationInput({
     const cached = Array.from(searchCache.entries())
       .find(([key]) => key.startsWith(query.split(' ')[0]))
       ?.[1];
-    
+
     if (cached) {
       setSuggestions(cached);
       setShowSuggestions(true);
@@ -100,12 +100,12 @@ export function LocationInput({
     setShowSuggestions(true);
 
     // Cancel previous request
-    if (abortController) {
-      abortController.abort();
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
 
     const controller = new AbortController();
-    setAbortController(controller);
+    abortControllerRef.current = controller;
 
     try {
       const params = new URLSearchParams({
@@ -129,10 +129,10 @@ export function LocationInput({
       }
 
       const results: NominatimResult[] = await response.json();
-      
+
       // Cache the results
       searchCache.set(cacheKey, results);
-      
+
       setSuggestions(results);
     } catch (error) {
       if (error instanceof Error && error.name !== 'AbortError') {
@@ -141,9 +141,9 @@ export function LocationInput({
       setSuggestions([]);
     } finally {
       setIsLoading(false);
-      setAbortController(null);
+      abortControllerRef.current = null;
     }
-  }, [abortController]);
+  }, []);
 
   // Debounced search
   useEffect(() => {
@@ -158,7 +158,7 @@ export function LocationInput({
     const value = e.target.value;
     setInputValue(value);
     setSelectedIndex(-1);
-    
+
     // Clear location if input is cleared
     if (!value.trim()) {
       onChange(null);
@@ -172,7 +172,7 @@ export function LocationInput({
       lng: parseFloat(result.lon),
       display_name: result.display_name
     };
-    
+
     setInputValue(location.name);
     onChange(location);
     setShowSuggestions(false);
@@ -185,7 +185,7 @@ export function LocationInput({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setSelectedIndex(prev => 
+        setSelectedIndex(prev =>
           prev < suggestions.length - 1 ? prev + 1 : prev
         );
         break;
@@ -236,7 +236,7 @@ export function LocationInput({
           {label}
         </label>
       )}
-      
+
       <div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
           {isLoading ? (
@@ -245,7 +245,7 @@ export function LocationInput({
             <MapPin className="h-4 w-4" />
           )}
         </div>
-        
+
         <input
           ref={inputRef}
           type="text"
@@ -256,9 +256,8 @@ export function LocationInput({
           onBlur={handleBlur}
           placeholder={placeholder}
           disabled={disabled}
-          className={`w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
-            disabled ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+          className={`w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${disabled ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
         />
       </div>
 
@@ -280,11 +279,10 @@ export function LocationInput({
                 <li
                   key={result.place_id}
                   onClick={() => handleSelectLocation(result)}
-                  className={`px-4 py-3 cursor-pointer transition-colors ${
-                    index === selectedIndex
+                  className={`px-4 py-3 cursor-pointer transition-colors ${index === selectedIndex
                       ? 'bg-primary/10 text-primary'
                       : 'hover:bg-muted'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start gap-2">
                     <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
