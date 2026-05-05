@@ -19,13 +19,14 @@ function Onboarding() {
 
   const [name, setName] = useState(pendingProfile?.name ?? "");
   const [phone, setPhone] = useState("");
+  const [age, setAge] = useState<string>("");
   const [gender, setGender] = useState<Profile["gender"]>("");
   const [bio, setBio] = useState("");
   const [connect, setConnect] = useState<ConnectMethod>("whatsapp");
   const [connectId, setConnectId] = useState("");
 
   const bioWords = bio.trim() ? bio.trim().split(/\s+/).length : 0;
-  const valid = name && phone && gender && bio && bioWords <= 20 && connectId;
+  const valid = name && phone && age && gender && bio && bioWords <= 20 && connectId;
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,6 +35,7 @@ function Onboarding() {
       name,
       email: pendingProfile?.email ?? "you@gmail.com",
       phone,
+      age: parseInt(age, 10),
       gender,
       bio,
       connect,
@@ -67,6 +69,9 @@ function Onboarding() {
           </Field>
           <Field label="Phone number">
             <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 …" className="input" />
+          </Field>
+          <Field label="Age">
+            <input type="number" value={age} onChange={(e) => setAge(e.target.value)} placeholder="e.g. 25" min="16" max="100" className="input" />
           </Field>
 
           <Field label="Gender">

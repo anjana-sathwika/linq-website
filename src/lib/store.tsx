@@ -16,6 +16,7 @@ export type Profile = {
   name: string;
   email: string;
   phone: string;
+  age: number;
   gender: "male" | "female" | "other" | "";
   bio: string;
   connect: ConnectMethod;
@@ -221,10 +222,10 @@ export function generateMatches(q: RideQuery | null): MatchProfile[] {
     { id: "m5", name: "Karan V.", avatar: "from-cyan-500/60 to-blue-500/20", overlapPct: 69, timing: "Returns same way", bio: "Founder, early bird.", connect: "instagram", connectId: "@karanv", rating: 4.6 },
     { id: "m6", name: "Diya N.", avatar: "from-rose-500/60 to-pink-500/20", overlapPct: 65, timing: "Flexible weekends", bio: "Teacher, friendly conversations.", connect: "telegram", connectId: "@diyan", rating: 4.8 },
   ];
-  
+
   const defaultPickup: Location = { name: "Bandra West", lat: 19.0596, lng: 72.8295 };
   const defaultDrop: Location = { name: "BKC", lat: 19.0759, lng: 72.8774 };
-  
+
   return base.map((b) => ({
     ...b,
     pickup: q?.pickup || defaultPickup,
