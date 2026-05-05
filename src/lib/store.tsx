@@ -150,11 +150,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const postRide = async (q: RideQuery) => {
       if (!profile) return null as any;
       // Mock ride posting - just return the data
+      const now = typeof window !== "undefined" ? Date.now() : 0;
+      const randomId = typeof window !== "undefined" ? Math.random().toString(36).slice(2, 9) : "mock-id";
       const postData: RidePost = {
         ...q,
-        id: "mock-ride-" + Math.random().toString(36).slice(2, 9),
+        id: "mock-ride-" + randomId,
         ownerName: profile.name,
-        createdAt: Date.now(),
+        createdAt: now,
       };
       setPosts((prev) => [postData, ...prev]);
       return postData;
@@ -163,7 +165,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const unlock = (id: string) => setUnlockedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
 
     const canUnlock = () => {
-      const now = Date.now();
+      const now = typeof window !== "undefined" ? Date.now() : 0;
       if (plan === "monthly" && planExpiry && planExpiry > now) return true;
       if (plan === "weekly" && planExpiry && planExpiry > now) return unlockedIds.length < 10;
       return unlockedIds.length < 2;
@@ -171,7 +173,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     const upgrade = (p: Plan) => {
       setPlan(p);
-      const now = Date.now();
+      const now = typeof window !== "undefined" ? Date.now() : 0;
       if (p === "weekly") setPlanExpiry(now + 7 * 24 * 3600 * 1000);
       else if (p === "monthly") setPlanExpiry(now + 30 * 24 * 3600 * 1000);
       else setPlanExpiry(null);

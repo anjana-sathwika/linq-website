@@ -225,7 +225,7 @@ function DesktopHome() {
         <div className="pointer-events-none absolute -bottom-40 -right-32 size-[40rem] rounded-full opacity-20 blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-primary), transparent 60%)" }} />
 
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-12 gap-6 px-8 py-16">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-12 gap-6 px-8 py-12">
           <div className="col-span-7 flex flex-col justify-center">
             <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs font-medium text-muted-foreground">
               <Sparkles className="size-3.5 text-primary" /> Verified ride-sharing, reimagined
@@ -303,7 +303,7 @@ function DesktopHome() {
 
       <footer className="border-t border-border/50">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-8 py-8 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} linQ — Go Together Rides.</p>
+          <p>© 2024 linQ — Go Together Rides.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-foreground">Privacy</a>
             <a href="#" className="hover:text-foreground">Terms</a>

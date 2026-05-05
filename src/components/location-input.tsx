@@ -66,6 +66,7 @@ export function LocationInput({
   // Clean up search cache periodically
   useEffect(() => {
     const interval = setInterval(() => {
+      if (typeof window === "undefined") return;
       const now = Date.now();
       for (const [key] of searchCache) {
         if (now - parseInt(key.split('_')[1]) > CACHE_EXPIRY) {
@@ -85,7 +86,7 @@ export function LocationInput({
     }
 
     // Check cache first
-    const cacheKey = `${query}_${Date.now()}`;
+    const cacheKey = `${query}_${typeof window !== "undefined" ? Date.now() : 0}`;
     const cached = Array.from(searchCache.entries())
       .find(([key]) => key.startsWith(query.split(' ')[0]))
       ?.[1];

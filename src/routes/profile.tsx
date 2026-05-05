@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { BottomNav } from "@/components/bottom-nav";
 import { useTheme, type Theme } from "@/lib/theme";
 import { useStore } from "@/lib/store";
-import { BadgeCheck, ChevronRight, Moon, Sun, Pencil, CreditCard, Shield, LogOut, AlertTriangle } from "lucide-react";
+import { BadgeCheck, ChevronRight, Moon, Sun, Pencil, CreditCard, Shield, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile — linQ" }] }),
@@ -75,8 +75,7 @@ function Profile() {
             title="Emergency SOS - Click for immediate help"
           >
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-400 to-red-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 animate-pulse" />
-            <AlertTriangle className="relative z-10 size-5 drop-shadow-lg" />
-            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-xs font-bold uppercase tracking-wider">SOS</span>
+            <span className="relative z-10 text-sm font-bold uppercase tracking-wider">SOS</span>
           </button>
         </div>
 
