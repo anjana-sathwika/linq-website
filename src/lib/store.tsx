@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useCallback, type ReactNode } from "react";
 
 export type Plan = "free" | "weekly" | "monthly";
 export type ConnectMethod = "instagram" | "whatsapp" | "telegram";
@@ -122,7 +122,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(KEY, JSON.stringify(data));
     }, 300); // 300ms debounce
 
-    return () => clearTimeout(timeoutId);
+    // Only clear timeout on unmount, not on every dependency change
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [profile, posts, unlockedIds, plan, planExpiry]);
 
   // Memoize context value to prevent unnecessary re-renders
@@ -157,11 +160,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     const unlock = (id: string) => setUnlockedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
 
-    const canUnlock = () => {
-      if (plan === "monthly" && planExpiry && planExpiry > Date.now()) return true;
-      if (plan === "weekly" && planExpiry && planExpiry > Date.now()) return unlockedIds.length < 10;
+    const canUnlock = useCallback(() => {
+      const now = Date.now();
+      if (plan === "monthly" && planExpiry && planExpiry > now) return true;
+      if (plan === "weekly" && planExpiry && planExpiry > now) return unlockedIds.length < 10;
       return unlockedIds.length < 2;
-    };
+    }, [plan, planExpiry, unlockedIds]);
 
     const upgrade = (p: Plan) => {
       setPlan(p);

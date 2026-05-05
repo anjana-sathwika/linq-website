@@ -93,15 +93,15 @@ function useRideForm() {
     setConfirmOpen(true);
   }, [pickup, drop]);
 
-  // Memoize confirmPost function
+  // Memoize confirmPost function - remove circular dependency
   const confirmPost = useCallback((post: boolean) => {
-    const q = buildQuery();
+    const q = { rideType: selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time };
     setLastQuery(q);
     if (post && signedIn) postRide(q);
     setConfirmOpen(false);
     if (!signedIn) navigate({ to: "/login" });
     else navigate({ to: "/matches" });
-  }, [buildQuery, signedIn, setLastQuery, postRide, navigate]);
+  }, [selected, pickup, drop, hasVehicle, vehicleType, seats, days, returnJourney, returnTime, date, time, signedIn, setLastQuery, postRide, navigate]);
 
   // Memoize state object to prevent recreation
   const state = useMemo(() => ({ 
