@@ -225,7 +225,7 @@ function DesktopHome() {
         <div className="pointer-events-none absolute -bottom-40 -right-32 size-[40rem] rounded-full opacity-20 blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-primary), transparent 60%)" }} />
 
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-12 gap-10 px-8 py-20">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-12 gap-6 px-8 py-16">
           <div className="col-span-7 flex flex-col justify-center">
             <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs font-medium text-muted-foreground">
               <Sparkles className="size-3.5 text-primary" /> Verified ride-sharing, reimagined

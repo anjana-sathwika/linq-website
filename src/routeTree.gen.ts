@@ -17,6 +17,9 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as SafetyRouteImport } from './routes/safety'
+import { Route as QueryRouteImport } from './routes/query'
 
 const TripsRoute = TripsRouteImport.update({
   id: '/trips',
@@ -58,6 +61,21 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PaymentsRoute = PaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SafetyRoute = SafetyRouteImport.update({
+  id: '/safety',
+  path: '/safety',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QueryRoute = QueryRouteImport.update({
+  id: '/query',
+  path: '/query',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +86,9 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/trips': typeof TripsRoute
+  '/payments': typeof PaymentsRoute
+  '/safety': typeof SafetyRoute
+  '/query': typeof QueryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +99,9 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/trips': typeof TripsRoute
+  '/payments': typeof PaymentsRoute
+  '/safety': typeof SafetyRoute
+  '/query': typeof QueryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +113,9 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/trips': typeof TripsRoute
+  '/payments': typeof PaymentsRoute
+  '/safety': typeof SafetyRoute
+  '/query': typeof QueryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +128,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/search'
     | '/trips'
+    | '/payments'
+    | '/safety'
+    | '/query'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
