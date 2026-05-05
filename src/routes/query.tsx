@@ -81,168 +81,108 @@ function Query() {
           </div>
         </div>
           <BottomNav />
+        </main>
     );
   }
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-4xl px-8 py-8">
+      <div className="mx-auto max-w-md px-5 pt-8 pb-32">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Raise a Query</h1>
+        <div className="flex items-center gap-4 mb-6">
           <button 
             onClick={() => navigate({ to: "/profile" })}
-            className="rounded-full bg-secondary p-2 hover:bg-muted transition-colors"
+            className="rounded-full bg-secondary p-2"
           >
             <ArrowLeft className="size-5" />
           </button>
+          <h1 className="text-2xl font-bold">Raise a Query</h1>
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
-          {/* Left Column - Query Form */}
-          <div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="mb-2 block text-sm font-medium">Query Type</label>
-                <select 
-                  value={queryType} 
-                  onChange={(e) => setQueryType(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-card px-4 py-3 focus:border-primary focus:outline-none"
-                >
-                  <option value="general">General Query</option>
-                  <option value="payment">Payment Issue</option>
-                  <option value="safety">Safety Concern</option>
-                  <option value="technical">Technical Issue</option>
-                  <option value="feedback">Feedback</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium">Subject</label>
-                <input
-                  type="text"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="Brief description of your query"
-                  className="w-full rounded-xl border border-border bg-card px-4 py-3 focus:border-primary focus:outline-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium">Message</label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Please provide detailed information about your query..."
-                  rows={8}
-                  className="w-full rounded-xl border border-border bg-card px-4 py-3 focus:border-primary focus:outline-none resize-none"
-                  required
-                />
-              </div>
-
+        {/* Query Type Selection */}
+        <div className="mb-6">
+          <h2 className="mb-3 font-semibold">Query Type</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {queryTypes.map((type) => (
               <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-xl bg-gradient-to-r from-primary to-primary/90 py-4 font-semibold text-primary-foreground transition hover:from-primary/90 hover:to-primary disabled:opacity-50 shadow-lg"
+                key={type.id}
+                onClick={() => setQueryType(type.id as any)}
+                className={`rounded-xl border p-3 text-left transition ${
+                  queryType === type.id 
+                    ? "border-primary bg-primary/10" 
+                    : "border-border bg-card hover:bg-muted"
+                }`}
               >
-                {isSubmitting ? "Submitting..." : "Submit Query"}
+                <p className="font-medium">{type.label}</p>
+                <p className="text-xs text-muted-foreground mt-1">{type.description}</p>
               </button>
-            </form>
+            ))}
+          </div>
+        </div>
+
+        {/* Query Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              Subject *
+            </label>
+            <input
+              type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="Brief description of your issue"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              maxLength={100}
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              {subject.length}/100 characters
+            </p>
           </div>
 
-          {/* Right Column - Help Resources */}
-          <div className="space-y-6">
-            {/* Quick Help Card */}
-            <div className="bg-card rounded-2xl border border-border p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <CheckCircle className="size-5 text-primary" />
-                Quick Help
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="size-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <CheckCircle className="size-4 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Response Time</p>
-                    <p className="text-sm text-muted-foreground">We typically respond within 24 hours</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="size-8 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <AlertTriangle className="size-4 text-red-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Emergency</p>
-                    <p className="text-sm text-muted-foreground">For urgent issues, use the SOS feature</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="size-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Mail className="size-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Track Status</p>
-                    <p className="text-sm text-muted-foreground">Check your email for updates on your query</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="bg-card rounded-2xl border border-border p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Phone className="size-5 text-primary" />
-                Contact Information
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 border border-border rounded-xl">
-                  <Mail className="size-5 text-blue-500" />
-                  <div>
-                    <p className="font-medium">Email Support</p>
-                    <p className="text-sm text-muted-foreground">support@linq.com</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3 p-4 border border-border rounded-xl">
-                  <Phone className="size-5 text-green-500" />
-                  <div>
-                    <p className="font-medium">Phone Support</p>
-                    <p className="text-sm text-muted-foreground">1800-LINQ-HELP</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Response Times */}
-            <div className="bg-card rounded-2xl border border-border p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Clock className="size-5 text-primary" />
-                Response Times
-              </h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">General queries</span>
-                  <span className="font-medium">24 hours</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Payment issues</span>
-                  <span className="font-medium">12 hours</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Safety concerns</span>
-                  <span className="font-medium">6 hours</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Technical issues</span>
-                  <span className="font-medium">48 hours</span>
-                </div>
-              </div>
-            </div>
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              Detailed Message *
+            </label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Please provide all relevant details about your query..."
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              rows={6}
+              maxLength={500}
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              {message.length}/500 characters
+            </p>
           </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting || !subject.trim() || !message.trim()}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 font-semibold text-background transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? (
+              <>
+                <div className="size-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                <span>Submitting...</span>
+              </>
+            ) : (
+              <>
+                <Send className="size-4" />
+                <span>Submit Query</span>
+              </>
+            )}
+          </button>
+        </form>
+
+        {/* Quick Info */}
+        <div className="mt-6 rounded-xl bg-muted p-4">
+          <h3 className="mb-2 font-semibold flex items-center gap-2">
+            <MessageSquare className="size-4" />
+            Response Time
+          </h3>
+          <ul className="space-y-1 text-sm text-muted-foreground">
+            <li>• General queries: 24 hours</li>
             <li>• Payment issues: 12 hours</li>
             <li>• Safety concerns: 6 hours</li>
             <li>• Technical issues: 48 hours</li>
