@@ -40,7 +40,7 @@ function Onboarding() {
       connectId,
     });
     setCreated(true);
-    setTimeout(() => navigate({ to: "/search" }), 1400);
+    setTimeout(() => navigate({ to: "/" }), 1400);
   }
 
   if (created) {
@@ -76,9 +76,8 @@ function Onboarding() {
                   type="button"
                   key={g}
                   onClick={() => setGender(g)}
-                  className={`flex-1 rounded-full border px-4 py-2 text-sm capitalize transition ${
-                    gender === g ? "border-primary bg-primary/10 text-primary" : "border-border bg-background"
-                  }`}
+                  className={`flex-1 rounded-full border px-4 py-2 text-sm capitalize transition ${gender === g ? "border-primary bg-primary/10 text-primary" : "border-border bg-background"
+                    }`}
                 >
                   {g}
                 </button>
@@ -108,9 +107,8 @@ function Onboarding() {
                   type="button"
                   key={c.id}
                   onClick={() => setConnect(c.id)}
-                  className={`flex flex-col items-center gap-1 rounded-2xl border p-3 text-xs transition ${
-                    connect === c.id ? "border-primary bg-primary/10 text-primary" : "border-border bg-background"
-                  }`}
+                  className={`flex flex-col items-center gap-1 rounded-2xl border p-3 text-xs transition ${connect === c.id ? "border-primary bg-primary/10 text-primary" : "border-border bg-background"
+                    }`}
                 >
                   <c.Icon className="size-5" />
                   {c.label}
@@ -120,6 +118,23 @@ function Onboarding() {
           </Field>
 
           <Field label={connect === "whatsapp" ? "WhatsApp number" : `${connect[0].toUpperCase()}${connect.slice(1)} username`}>
+            {connect === "whatsapp" && (
+              <div className="mb-2 flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="sameAsPhone"
+                  checked={connectId === phone && phone !== ""}
+                  onChange={(e) => {
+                    if (e.target.checked && phone) setConnectId(phone);
+                    else if (!e.target.checked && connectId === phone) setConnectId("");
+                  }}
+                  className="size-3.5 rounded border-border"
+                />
+                <label htmlFor="sameAsPhone" className="text-xs text-muted-foreground cursor-pointer">
+                  Same as the no. provided above
+                </label>
+              </div>
+            )}
             <input
               value={connectId}
               onChange={(e) => setConnectId(e.target.value)}
