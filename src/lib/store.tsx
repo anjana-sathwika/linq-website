@@ -112,7 +112,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setPlan(local.plan || "free");
     setPlanExpiry(local.planExpiry || null);
     setPendingProfile(null);
-    setIsInitializing(false);
   }, []);
 
   // Save local subscription state continuously
