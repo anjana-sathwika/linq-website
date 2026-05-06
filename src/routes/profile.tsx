@@ -134,45 +134,65 @@ function Profile() {
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="mt-8">
-              <h3 className="text-white font-semibold mb-4 text-lg">Quick Actions</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  onClick={() => navigate({ to: "/payments" })}
-                  className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
-                >
-                  <CreditCard className="size-6 text-white mb-3" />
-                  <h4 className="text-white font-semibold">Payments</h4>
-                  <p className="text-white/70 text-sm mt-1">Manage plans & transactions</p>
-                </button>
-                
-                <button
-                  onClick={() => navigate({ to: "/safety" })}
-                  className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
-                >
-                  <Shield className="size-6 text-white mb-3" />
-                  <h4 className="text-white font-semibold">Safety</h4>
-                  <p className="text-white/70 text-sm mt-1">Emergency & verification</p>
-                </button>
-                
-                <button
-                  onClick={() => navigate({ to: "/query" })}
-                  className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
-                >
-                  <Pencil className="size-6 text-white mb-3" />
-                  <h4 className="text-white font-semibold">Support</h4>
-                  <p className="text-white/70 text-sm mt-1">Raise a query</p>
-                </button>
-                
-                <button
-                  onClick={() => navigate({ to: "/onboarding" })}
-                  className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
-                >
-                  <Pencil className="size-6 text-white mb-3" />
-                  <h4 className="text-white font-semibold">Edit Profile</h4>
-                  <p className="text-white/70 text-sm mt-1">Update your information</p>
-                </button>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-3 gap-6 mb-8">
+              <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Users className="size-5 text-primary" />
+                  </div>
+                  <h3 className="font-semibold">Total Rides</h3>
+                </div>
+                <p className="text-3xl font-bold text-primary">84</p>
+              </div>
+              
+              <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="size-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <Star className="size-5 text-green-600" />
+                  </div>
+                  <h3 className="font-semibold">Rating</h3>
+                </div>
+                <p className="text-3xl font-bold text-green-600">4.9</p>
+              </div>
+              
+              <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="size-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <CalendarDays className="size-5 text-blue-600" />
+                  </div>
+                  <h3 className="font-semibold">Member Since</h3>
+                </div>
+                <p className="text-3xl font-bold text-blue-600">Jan 2024</p>
+              </div>
+            </div>
+
+            {/* Personal Information */}
+            <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+              <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <BadgeCheck className="size-5 text-primary" />
+                  Personal Information
+                </div>
+                <Pencil className="size-4 text-muted-foreground cursor-pointer hover:text-primary transition-colors" />
+              </h3>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <p className="text-sm text-white/80 mb-1">Full Name</p>
+                  <p className="font-medium">{profile?.name || "Not set"}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-white/80 mb-1">Age</p>
+                  <p className="font-medium">{profile?.age || "Not set"} years</p>
+                </div>
+                <div>
+                  <p className="text-sm text-white/80 mb-1">Gender</p>
+                  <p className="font-medium">{profile?.gender || "Not set"}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm text-white/80 mb-1">Bio</p>
+                  <p className="font-medium">{profile?.bio || "No bio added yet"}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -215,6 +235,48 @@ function Profile() {
             </div>
           </div>
 
+          {/* Quick Actions */}
+          <div className="p-8">
+            <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => navigate({ to: "/payments" })}
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20 lg:hidden"
+              >
+                <CreditCard className="size-6 mb-3" />
+                <h4 className="font-semibold">Payments</h4>
+                <p className="text-sm text-muted-foreground">Manage plans & transactions</p>
+              </button>
+              
+              <button
+                onClick={() => navigate({ to: "/safety" })}
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20 lg:hidden"
+              >
+                <Shield className="size-6 mb-3" />
+                <h4 className="font-semibold">Safety</h4>
+                <p className="text-sm text-muted-foreground">Emergency & verification</p>
+              </button>
+              
+              <button
+                onClick={() => navigate({ to: "/query" })}
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20 lg:hidden"
+              >
+                <Pencil className="size-6 mb-3" />
+                <h4 className="font-semibold">Support</h4>
+                <p className="text-sm text-muted-foreground">Raise a query</p>
+              </button>
+              
+              <button
+                onClick={() => navigate({ to: "/onboarding" })}
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20 lg:hidden"
+              >
+                <Pencil className="size-6 mb-3" />
+                <h4 className="font-semibold">Edit Profile</h4>
+                <p className="text-sm text-muted-foreground">Update your information</p>
+              </button>
+            </div>
+          </div>
+
           {/* Content Area */}
           <div className="p-8">
             {/* Stats Cards */}
@@ -252,9 +314,12 @@ function Profile() {
 
             {/* Personal Information */}
             <div className="bg-card rounded-2xl border border-border p-6 mb-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <BadgeCheck className="size-5 text-primary" />
-                Personal Information
+              <h3 className="text-lg font-semibold mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <BadgeCheck className="size-5 text-primary" />
+                  Personal Information
+                </div>
+                <Pencil className="size-4 text-muted-foreground cursor-pointer hover:text-primary transition-colors" />
               </h3>
               <div className="grid grid-cols-2 gap-6">
                 <div>
@@ -282,7 +347,7 @@ function Profile() {
                 signOut();
                 navigate({ to: "/login" });
               }}
-              className="w-full bg-destructive text-destructive-foreground px-6 py-3 rounded-xl font-semibold hover:bg-destructive/90 transition-all"
+              className="w-full bg-destructive text-destructive-foreground px-6 py-3 rounded-xl font-semibold hover:bg-destructive/90 transition-all flex items-center justify-center"
             >
               <LogOut className="size-4 mr-2" />
               Sign Out
