@@ -126,11 +126,6 @@ function Profile() {
                     </div>
                   </div>
                 </div>
-                
-                <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
-                  <h3 className="text-white font-semibold mb-2">Member Since</h3>
-                  <p className="text-2xl text-white font-bold">2024</p>
-                </div>
               </div>
             </div>
 
