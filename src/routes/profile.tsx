@@ -382,6 +382,82 @@ function Profile() {
                 </div>
               </div>
             </div>
+          </div>
+
+        {/* Quick Actions - Mobile */}
+        <div className="lg:hidden p-8">
+          <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              onClick={() => navigate({ to: "/payments" })}
+              className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
+            >
+              <CreditCard className="size-6 mb-3" />
+              <h4 className="font-semibold">Payments</h4>
+              <p className="text-sm text-muted-foreground">Manage plans & transactions</p>
+            </button>
+            
+            <button
+              onClick={() => navigate({ to: "/safety" })}
+              className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
+            >
+              <Shield className="size-6 mb-3" />
+              <h4 className="font-semibold">Safety</h4>
+              <p className="text-sm text-muted-foreground">Emergency & verification</p>
+            </button>
+            
+            <button
+              onClick={() => navigate({ to: "/query" })}
+              className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
+            >
+              <Pencil className="size-6 mb-3" />
+              <h4 className="font-semibold">Support</h4>
+              <p className="text-sm text-muted-foreground">Raise a query</p>
+            </button>
+            
+            <button
+              onClick={() => navigate({ to: "/onboarding" })}
+              className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
+            >
+              <Pencil className="size-6 mb-3" />
+              <h4 className="font-semibold">Edit Profile</h4>
+              <p className="text-sm text-muted-foreground">Update your information</p>
+            </button>
+          </div>
+        </div>
+
+        {/* Sign Out Button */}
+        <div className="p-8">
+          <button
+            onClick={() => {
+              signOut();
+              navigate({ to: "/login" });
+            }}
+            className="w-full bg-destructive text-destructive-foreground px-6 py-3 rounded-xl font-semibold hover:bg-destructive/90 transition-all flex items-center justify-center"
+          >
+            <LogOut className="size-4 mr-2" />
+            Sign Out
+          </button>
+        </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Full Name</p>
+                  <p className="font-medium">{profile?.name || "Not set"}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Age</p>
+                  <p className="font-medium">{profile?.age || "Not set"} years</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Gender</p>
+                  <p className="font-medium">{profile?.gender || "Not set"}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm text-muted-foreground mb-1">Bio</p>
+                  <p className="font-medium">{profile?.bio || "No bio added yet"}</p>
+                </div>
+              </div>
+            </div>
 
             {/* Sign Out Button */}
             <div className="p-8">
