@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { BottomNav } from "@/components/bottom-nav";
 import { useTheme, type Theme } from "@/lib/theme";
 import { useStore } from "@/lib/store";
-import { BadgeCheck, ChevronRight, Moon, Sun, Pencil, CreditCard, Shield, LogOut } from "lucide-react";
+import { BadgeCheck, ChevronRight, Moon, Sun, Pencil, CreditCard, Shield, LogOut, Users, Star, CalendarDays } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile — linQ" }] }),
