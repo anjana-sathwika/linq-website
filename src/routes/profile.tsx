@@ -93,12 +93,12 @@ function Profile() {
           <div className="absolute inset-0 bg-black/10" />
           <div className="relative z-10 flex flex-col px-12 py-16">
             {/* User Profile Card */}
-            <div className="mb-8 rounded-3xl bg-white/10 backdrop-blur-xl p-8 border border-white/20 shadow-2xl">
+            <div className={`mb-8 rounded-3xl ${theme === "sapphire" ? "bg-white/10" : "bg-gray-900/10"} backdrop-blur-xl p-8 ${theme === "sapphire" ? "border-white/20" : "border-gray-700/20"} shadow-2xl`}>
               <div className="flex items-center gap-6 mb-6">
                 <div className="size-24 rounded-full bg-gradient-to-br from-primary/70 to-primary/20 ring-4 ring-primary/40 shadow-xl" />
                 <div>
-                  <h2 className="text-3xl font-bold text-white">{profile?.name || "User"}</h2>
-                  <div className="flex items-center gap-2 text-white/80">
+                  <h2 className={`text-3xl font-bold ${theme === "sapphire" ? "text-white" : "text-gray-100"}`}>{profile?.name || "User"}</h2>
+                  <div className={`flex items-center gap-2 ${theme === "sapphire" ? "text-white/80" : "text-gray-300"}`}>
                     <BadgeCheck className="size-5 text-primary bg-white/20 p-1 rounded-full" />
                     <span className="text-lg">4.9 ★ · 84 trips</span>
                   </div>
@@ -106,23 +106,23 @@ function Profile() {
               </div>
               
               {profile?.bio && (
-                <p className="text-white/90 leading-relaxed mb-6">{profile.bio}</p>
+                <p className={`leading-relaxed mb-6 ${theme === "sapphire" ? "text-white/90" : "text-gray-300"}`}>{profile.bio}</p>
               )}
-
+              
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
-                  <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
-                    <Shield className="size-4" />
+                <div className={`rounded-xl p-4 backdrop-blur ${theme === "sapphire" ? "bg-white/10" : "bg-gray-800/10"}`}>
+                  <h3 className={`font-semibold mb-2 flex items-center gap-2 ${theme === "sapphire" ? "text-white" : "text-gray-100"}`}>
+                    <BadgeCheck className="size-5 text-primary bg-white/20 p-1 rounded-full" />
                     Verification Status
                   </h3>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full" />
-                      <span className="text-white/80 text-sm">ID Verified</span>
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className={`text-sm ${theme === "sapphire" ? "text-white/80" : "text-gray-300"}`}>ID Verified</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full" />
-                      <span className="text-white/80 text-sm">Phone Verified</span>
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span className={`text-sm ${theme === "sapphire" ? "text-white/80" : "text-gray-300"}`}>Phone Verified</span>
                     </div>
                   </div>
                 </div>
@@ -236,12 +236,12 @@ function Profile() {
           </div>
 
           {/* Quick Actions */}
-          <div className="p-8">
+          <div className="p-8 lg:hidden">
             <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => navigate({ to: "/payments" })}
-                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20 lg:hidden"
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
               >
                 <CreditCard className="size-6 mb-3" />
                 <h4 className="font-semibold">Payments</h4>
@@ -250,7 +250,7 @@ function Profile() {
               
               <button
                 onClick={() => navigate({ to: "/safety" })}
-                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20 lg:hidden"
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
               >
                 <Shield className="size-6 mb-3" />
                 <h4 className="font-semibold">Safety</h4>
@@ -259,7 +259,7 @@ function Profile() {
               
               <button
                 onClick={() => navigate({ to: "/query" })}
-                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20 lg:hidden"
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
               >
                 <Pencil className="size-6 mb-3" />
                 <h4 className="font-semibold">Support</h4>
@@ -268,7 +268,7 @@ function Profile() {
               
               <button
                 onClick={() => navigate({ to: "/onboarding" })}
-                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20 lg:hidden"
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
               >
                 <Pencil className="size-6 mb-3" />
                 <h4 className="font-semibold">Edit Profile</h4>
@@ -342,16 +342,18 @@ function Profile() {
             </div>
 
             {/* Sign Out Button */}
-            <button
-              onClick={() => {
-                signOut();
-                navigate({ to: "/login" });
-              }}
-              className="w-full bg-destructive text-destructive-foreground px-6 py-3 rounded-xl font-semibold hover:bg-destructive/90 transition-all flex items-center justify-center"
-            >
-              <LogOut className="size-4 mr-2" />
-              Sign Out
-            </button>
+            <div className="p-8">
+              <button
+                onClick={() => {
+                  signOut();
+                  navigate({ to: "/login" });
+                }}
+                className="w-full bg-destructive text-destructive-foreground px-6 py-3 rounded-xl font-semibold hover:bg-destructive/90 transition-all flex items-center justify-center"
+              >
+                <LogOut className="size-4 mr-2" />
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
       </div>
