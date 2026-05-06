@@ -126,6 +126,11 @@ function Profile() {
                     </div>
                   </div>
                 </div>
+                
+                <div className="bg-white/10 rounded-xl p-4 backdrop-blur">
+                  <h3 className="text-white font-semibold mb-2">Member Since</h3>
+                  <p className="text-2xl text-white font-bold">2024</p>
+                </div>
               </div>
             </div>
 
@@ -232,6 +237,48 @@ function Profile() {
 
           {/* Quick Actions */}
           <div className="p-8 lg:hidden">
+            <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => navigate({ to: "/payments" })}
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
+              >
+                <CreditCard className="size-6 mb-3" />
+                <h4 className="font-semibold">Payments</h4>
+                <p className="text-sm text-muted-foreground">Manage plans & transactions</p>
+              </button>
+              
+              <button
+                onClick={() => navigate({ to: "/safety" })}
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
+              >
+                <Shield className="size-6 mb-3" />
+                <h4 className="font-semibold">Safety</h4>
+                <p className="text-sm text-muted-foreground">Emergency & verification</p>
+              </button>
+              
+              <button
+                onClick={() => navigate({ to: "/query" })}
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
+              >
+                <Pencil className="size-6 mb-3" />
+                <h4 className="font-semibold">Support</h4>
+                <p className="text-sm text-muted-foreground">Raise a query</p>
+              </button>
+              
+              <button
+                onClick={() => navigate({ to: "/onboarding" })}
+                className="bg-white/10 backdrop-blur rounded-xl p-6 text-left hover:bg-white/20 transition-all border border-white/20"
+              >
+                <Pencil className="size-6 mb-3" />
+                <h4 className="font-semibold">Edit Profile</h4>
+                <p className="text-sm text-muted-foreground">Update your information</p>
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Actions - Desktop */}
+          <div className="hidden lg:p-8">
             <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
             <div className="grid grid-cols-2 gap-4">
               <button
